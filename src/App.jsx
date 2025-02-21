@@ -13,11 +13,9 @@ import Dashboard from "./pages/Dashboard";
 import MFAPage from "./pages/MFAPage";
 import TourDetails from "./pages/TourDetails";
 
-// Simulación de autenticación (puedes cambiarlo por un estado global o API)
 const isAuthenticated = () => localStorage.getItem("token") !== null;
-const getUserRole = () => localStorage.getItem("role"); // "admin", "client", "operator"
+const getUserRole = () => localStorage.getItem("role");
 
-// Componente para proteger rutas
 const ProtectedRoute = ({ element, role }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
@@ -40,10 +38,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mfa" element={<MFAPage />} />
+        <Route path="/tours" element={<TourPage />} />
 
         {/* CLIENT ROUTES */}
         <Route path="/voucher" element={<Voucher />} />
-        <Route path="/tours" element={<TourPage />} />
         <Route path="/tour/:id" element={<TourDetails />} />
         <Route path="/reservations" element={<ReservationPage />} />
 
@@ -64,27 +62,27 @@ function App() {
 
 export default App;
 
-      // <Routes>
-      //   {/* PUBLIC ROUTES */}
-      //   <Route path="/" element={<Home />} />
-      //   <Route path="/login" element={<Login />} />
-      //   <Route path="/register" element={<Register />} />
-      //   <Route path="/mfa" element={<MFAPage />} />
+  // <Routes>
+  //   {/* PUBLIC ROUTES */}
+  //   <Route path="/" element={<Home />} />
+  //   <Route path="/login" element={<Login />} />
+  //   <Route path="/register" element={<Register />} />
+  //   <Route path="/mfa" element={<MFAPage />} />
+  //   <Route path="/tours" element={<TourPage />} />
 
-      //   {/* CLIENT ROUTES  */}
-      //   <Route path="/voucher" element={<ProtectedRoute element={<Voucher />} role="client" />} />
-      //   <Route path="/tours" element={<ProtectedRoute element={<TourPage />} role="client" />} />
-      //   <Route path="/tour/:id" element={<ProtectedRoute element={<TourDetail />} role="client" />} />
-      //   <Route path="/reservations" element={<ProtectedRoute element={<ReservationPage />} role="client" />} />
+  //   {/* CLIENT ROUTES  */}
+  //   <Route path="/voucher" element={<ProtectedRoute element={<Voucher />} role="1" />} />
+  //   <Route path="/tour/:id" element={<ProtectedRoute element={<TourDetail />} role="1" />} />
+  //   <Route path="/reservations" element={<ProtectedRoute element={<ReservationPage />} role="1" />} />
 
-      //   {/* ADMIN ROUTES */}
-      //   <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} role="admin" />} />
-      //   <Route path="/tours/manage" element={<ProtectedRoute element={<TourManagement />} role="admin" />} />
-      //   <Route path="/reservations/manage" element={<ProtectedRoute element={<ReservationManagement />} role="admin" />} />
+  //   {/* ADMIN ROUTES */}
+  //   <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} role="2" />} />
+  //   <Route path="/tours/manage" element={<ProtectedRoute element={<TourManagement />} role="2" />} />
+  //   <Route path="/reservations/manage" element={<ProtectedRoute element={<ReservationManagement />} role="2" />} />
 
-      //   {/* OPERATOR ROUTES */}
-      //   <Route path="/payments/manage" element={<ProtectedRoute element={<PaymentManagement />} role="operator" />} />
+  //   {/* OPERATOR ROUTES */}
+  //   <Route path="/payments/manage" element={<ProtectedRoute element={<PaymentManagement />} role="3" />} />
 
-      //   {/* REDIRECT UNKNOWN ROUTES */}
-      //   <Route path="*" element={<Navigate to="/" />} />
-      // </Routes>
+  //   {/* REDIRECT UNKNOWN ROUTES */}
+  //   <Route path="*" element={<Navigate to="/" />} />
+  // </Routes>

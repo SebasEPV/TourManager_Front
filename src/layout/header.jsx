@@ -14,11 +14,11 @@ const Header = () => {
           <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Inicio</span>
         </Link>
-        <Link to="/tours" target="_blank" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+        <Link to="/tours" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
           <FaSubway size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Tours</span>
         </Link>
-        <Link to="/reservas" target="_blank" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+        <Link to="/reservas" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
           <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Reservas</span>
         </Link>
