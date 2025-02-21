@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import Header from "./layout/header";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/login";
+import Register from "./pages/register";
 import PaymentManagement from "./pages/PaymentManagement";
 import TourManagement from "./pages/TourManagement";
 import ReservationManagement from "./pages/ReservationManagement";
@@ -71,7 +71,7 @@ function App() {
       <Header />
       <Routes>
         {/* PUBLIC ROUTES */}
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mfa" element={<MFAPage />} />
