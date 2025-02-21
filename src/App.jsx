@@ -13,15 +13,52 @@ import Dashboard from "./pages/Dashboard";
 import MFAPage from "./pages/MFAPage";
 import TourDetails from "./pages/TourDetails";
 
-const isAuthenticated = () => localStorage.getItem("token") !== null;
-const getUserRole = () => localStorage.getItem("role");
 
+// Obtiene los datos de la sesión
+const getSessionData = async () => {
+  const response = await fetch("/session_data", { method: "GET", credentials: "include" });
+  if (response.ok) {
+    return await response.json(); 
+  }
+  return null;
+};
+
+// Verifica si el usuario está autenticado
+const isAuthenticated = async () => {
+  const sessionData = await getSessionData();
+  return sessionData !== null; 
+};
+
+// Obtiene el rol del usuario
+const getUserRole = async () => {
+  const sessionData = await getSessionData();
+  return sessionData ? sessionData.role : null; 
+};
+
+// Componente para proteger las rutas
 const ProtectedRoute = ({ element, role }) => {
-  if (!isAuthenticated()) {
+  const [isAuth, setIsAuth] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const auth = await isAuthenticated();
+      const role = await getUserRole();
+      setIsAuth(auth);
+      setUserRole(role);
+    };
+    checkAuthentication();
+  }, []);
+
+  if (isAuth === null) {
+    return <div>Loading...</div>; 
+  }
+
+  if (!isAuth) {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && getUserRole() !== role) {
+  if (role && userRole !== role) {
     return <Navigate to="/" replace />;
   }
 
@@ -43,7 +80,7 @@ function App() {
         {/* CLIENT ROUTES */}
         <Route path="/voucher" element={<Voucher />} />
         <Route path="/tour/:id" element={<TourDetails />} />
-        <Route path="/reservations" element={<ReservationPage />} />
+        <Route path="/reservations/:id" element={<ReservationPage />} />
 
         {/* ADMIN ROUTES */}
         <Route path="/dashboard" element={<Dashboard />} />
