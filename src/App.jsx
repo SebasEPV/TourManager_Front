@@ -12,6 +12,7 @@ import Voucher from "./pages/Voucher";
 import Dashboard from "./pages/Dashboard";
 import MFAPage from "./pages/MFAPage";
 import TourDetails from "./pages/TourDetails";
+import RegisterMFA from "./pages/RegisterMFA";
 
 
 // Obtiene los datos de la sesión
@@ -74,6 +75,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register-mfa" element={<RegisterMFA />} />
         <Route path="/mfa" element={<MFAPage />} />
         <Route path="/tours" element={<TourPage />} />
 
