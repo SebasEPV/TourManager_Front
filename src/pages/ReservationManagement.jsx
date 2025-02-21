@@ -2,20 +2,7 @@
 
 import { TreePalmIcon as PalmTree } from "lucide-react"
 import { useState, useEffect } from "react"
-
-const API_BASE_URL = "http://localhost:3000/reservations"
-
-// Función para obtener las reservaciones
-const getReservations = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}`)
-    if (!response.ok) throw new Error("Error al obtener las reservaciones")
-    return await response.json()
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
+import { getReservations } from "../services/reservationService"
 
 export default function ReservationManagement() {
   const [reservations, setReservations] = useState([])
