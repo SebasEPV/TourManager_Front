@@ -1,105 +1,121 @@
-"use client"
-
-import { TreePalmIcon as PalmTree } from "lucide-react"
-import { useState, useEffect } from "react"
-import { getReservations } from "../services/reservationService"
+import { TreePalmIcon as PalmTree } from "lucide-react";
+import HeaderAdmin from "../layout/HeaderAdmin";
+import SidebarAdmin from "../layout/SidebarAdmin";
 
 export default function ReservationManagement() {
-  const [reservations, setReservations] = useState([])
-
-  useEffect(() => {
-    const fetchReservations = async () => {
-      const data = await getReservations()
-      setReservations(data)
-    }
-    fetchReservations()
-  }, [])
+  const reservations = [
+    {
+      id: 1,
+      clientName: "Jesús Martínez",
+      date: "14/02/2025",
+      quantity: "6 Personas",
+      payment: "Aprobado",
+      status: "Confirmado",
+    },
+    {
+      id: 2,
+      clientName: "Kristal Palma",
+      date: "18/03/2025",
+      quantity: "2 personas",
+      payment: "Procesando",
+      status: "Pendiente",
+    },
+    {
+      id: 3,
+      clientName: "Melchor Ojeda",
+      date: "18/03/2025",
+      quantity: "2 personas",
+      payment: "Rechazado",
+      status: "Cancelado",
+    },
+  ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 1:
-        return "bg-emerald-500 text-white"
-      case 2:
-        return "bg-blue-500 text-white"
-      case 0:
-        return "bg-red-500 text-white"
+      case "Confirmado":
+      case "Aprobado":
+        return "bg-green-700 text-white";
+      case "Pendiente":
+        return "bg-yellow-200 text-yellow-800";
+      case "Procesando":
+        return "bg-gray-500 text-white";
+      case "Rechazado":
+      case "Cancelado":
+        return "bg-red-800 text-white";
       default:
-        return "bg-gray-100 text-gray-700"
+        return "bg-gray-100";
     }
-  }
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 1:
-        return "Reservado"
-      case 2:
-        return "Pagado"
-      case 0:
-        return "Cancelado"
-      default:
-        return "Estado desconocido"
-    }
-  }
+  };
 
   return (
-    <div className="bg-white rounded-xl p-8 shadow-lg">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="bg-[#CD9B4A]/10 p-3 rounded-lg">
-          <PalmTree className="w-6 h-6 text-[#CD9B4A]" />
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <SidebarAdmin />
+  
+      {/* Contenedor principal */}
+      <div className="flex flex-col flex-1">
+        {/* Header */}
+        <HeaderAdmin />
+  
+        {/* Contenido principal */}
+        <div className="p-6">
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <PalmTree className="w-8 h-8" />
+              <h2 className="text-2xl font-bold">NOMBRE DEL TOUR</h2>
+            </div>
+  
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left">
+                    <th className="px-4 py-2 bg-[#CD9B4A] text-white rounded-tl-lg">
+                      Nombre cliente
+                    </th>
+                    <th className="px-4 py-2 bg-[#CD9B4A] text-white">Fecha</th>
+                    <th className="px-4 py-2 bg-[#CD9B4A] text-white">Cantidad</th>
+                    <th className="px-4 py-2 bg-[#CD9B4A] text-white">Pago</th>
+                    <th className="px-4 py-2 bg-[#CD9B4A] text-white rounded-tr-lg">
+                      Estado
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reservations.map((reservation) => (
+                    <tr key={reservation.id} className="border-b">
+                      <td className="px-4 py-3 bg-[#F5DEB3]">
+                        {reservation.clientName}
+                      </td>
+                      <td className="px-4 py-3 bg-[#F5DEB3]">{reservation.date}</td>
+                      <td className="px-4 py-3 bg-[#F5DEB3]">
+                        {reservation.quantity}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                            reservation.payment
+                          )}`}
+                        >
+                          {reservation.payment}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                            reservation.status
+                          )}`}
+                        >
+                          {reservation.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-900">Reservaciones</h2>
-      </div>
-
-      <div className="overflow-x-auto rounded-xl border border-gray-200">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left">
-              <th className="px-6 py-4 bg-[#CD9B4A]/10 text-[#CD9B4A] font-medium">Nombre cliente</th>
-              <th className="px-6 py-4 bg-[#CD9B4A]/10 text-[#CD9B4A] font-medium">Fecha</th>
-              <th className="px-6 py-4 bg-[#CD9B4A]/10 text-[#CD9B4A] font-medium">Cantidad</th>
-              <th className="px-6 py-4 bg-[#CD9B4A]/10 text-[#CD9B4A] font-medium">Pago</th>
-              <th className="px-6 py-4 bg-[#CD9B4A]/10 text-[#CD9B4A] font-medium">Estado</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {reservations.map((reservation) => (
-              <tr key={reservation.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-gray-900">
-                    {reservation.user.name} {reservation.user.last_name}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-gray-600">{new Date(reservation.date).toLocaleDateString()}</td>
-                <td className="px-6 py-4">
-                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm bg-gray-100 text-gray-700">
-                    {reservation.num_of_people}
-                    <span className="text-gray-500">Personas</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                      reservation.status,
-                    )}`}
-                  >
-                    {getStatusText(reservation.status)}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                      reservation.status,
-                    )}`}
-                  >
-                    {getStatusText(reservation.status)}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
-  )
+  );
 }
-
