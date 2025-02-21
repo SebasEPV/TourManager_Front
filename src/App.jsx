@@ -5,13 +5,13 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import PaymentManagement from "./pages/PaymentManagement";
 import TourManagement from "./pages/TourManagement";
-import TourDetail from "./components/TourDetail";
 import ReservationManagement from "./pages/ReservationManagement";
 import ReservationPage from "./pages/ReservationsPage";
 import TourPage from "./pages/TourPage";
 import Voucher from "./pages/Voucher";
 import Dashboard from "./pages/Dashboard";
 import MFAPage from "./pages/MFAPage";
+import TourDetails from "./pages/TourDetails";
 
 // Simulación de autenticación (puedes cambiarlo por un estado global o API)
 const isAuthenticated = () => localStorage.getItem("token") !== null;
@@ -44,7 +44,7 @@ function App() {
         {/* CLIENT ROUTES */}
         <Route path="/voucher" element={<Voucher />} />
         <Route path="/tours" element={<TourPage />} />
-        <Route path="/tour/:id" element={<TourDetail />} />
+        <Route path="/tour/:id" element={<TourDetails />} />
         <Route path="/reservations" element={<ReservationPage />} />
 
         {/* ADMIN ROUTES */}

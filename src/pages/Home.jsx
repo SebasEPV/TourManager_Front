@@ -1,5 +1,5 @@
 import Hero from "../components/Hero";
-import TourDetail from "../components/TourDetail";
+import TourDetail from "../components/TourCard";
 import TourExplorer from "../components/TourExplorer";
 
 export default function Home () {
