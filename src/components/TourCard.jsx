@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const TourDetail = () => {
+const TourCard = () => {
   const tours = [
     {
       title: "Isla Mujeres",
@@ -46,4 +46,4 @@ const TourDetail = () => {
   );
 };
 
-export default TourDetail;
+export default TourCard;

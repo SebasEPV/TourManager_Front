@@ -1,47 +1,57 @@
 import { TreePalmIcon as PalmTree } from "lucide-react";
+import { useState, useEffect } from "react";
+
+const API_BASE_URL = "http://localhost:3000/reservations";
+
+// Función para obtener las reservaciones
+const getReservations = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}`);
+    if (!response.ok) throw new Error("Error al obtener las reservaciones");
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 
 export default function ReservationManagement() {
-  const reservations = [
-    {
-      id: 1,
-      clientName: "Jesús Martínez",
-      date: "14/02/2025",
-      quantity: "6 Personas",
-      payment: "Aprobado",
-      status: "Confirmado",
-    },
-    {
-      id: 2,
-      clientName: "Kristal Palma",
-      date: "18/03/2025",
-      quantity: "2 personas",
-      payment: "Procesando",
-      status: "Pendiente",
-    },
-    {
-      id: 3,
-      clientName: "Melchor Ojeda",
-      date: "18/03/2025",
-      quantity: "2 personas",
-      payment: "Rechazado",
-      status: "Cancelado",
-    },
-  ];
+  const [reservations, setReservations] = useState([]);
 
+  // Obtener las reservaciones cuando el componente se monte
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const data = await getReservations();
+      setReservations(data);
+    };
+    fetchReservations();
+  }, []);
+
+  // Función para obtener el color del estado
   const getStatusColor = (status) => {
     switch (status) {
-      case "Confirmado":
-      case "Aprobado":
+      case 1: // Confirmado
         return "bg-green-700 text-white";
-      case "Pendiente":
-        return "bg-yellow-200 text-yellow-800";
-      case "Procesando":
-        return "bg-gray-500 text-white";
-      case "Rechazado":
-      case "Cancelado":
+      case 2: // Pagado
+        return "bg-blue-500 text-white";
+      case 0: // Cancelado
         return "bg-red-800 text-white";
       default:
         return "bg-gray-100";
+    }
+  };
+
+  // Función para obtener el texto del estado
+  const getStatusText = (status) => {
+    switch (status) {
+      case 1: // Reservado
+        return "Reservado";
+      case 2: // Pagado
+        return "Pagado";
+      case 0: // Cancelado
+        return "Cancelado";
+      default:
+        return "Estado desconocido";
     }
   };
 
@@ -49,7 +59,7 @@ export default function ReservationManagement() {
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <PalmTree className="w-8 h-8" />
-        <h2 className="text-2xl font-bold">NOMBRE DEL TOUR</h2>
+        <h2 className="text-2xl font-bold">Reservaciones</h2>
       </div>
 
       <div className="overflow-x-auto">
@@ -71,19 +81,21 @@ export default function ReservationManagement() {
             {reservations.map((reservation) => (
               <tr key={reservation.id} className="border-b">
                 <td className="px-4 py-3 bg-[#F5DEB3]">
-                  {reservation.clientName}
+                  {reservation.user.name} {reservation.user.last_name} 
                 </td>
-                <td className="px-4 py-3 bg-[#F5DEB3]">{reservation.date}</td>
                 <td className="px-4 py-3 bg-[#F5DEB3]">
-                  {reservation.quantity}
+                  {new Date(reservation.date).toLocaleDateString()} {/* Convertir fecha */}
+                </td>
+                <td className="px-4 py-3 bg-[#F5DEB3]">
+                  {reservation.num_of_people} Personas
                 </td>
                 <td className="px-4 py-3">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                      reservation.payment
+                      reservation.status
                     )}`}
                   >
-                    {reservation.payment}
+                    {getStatusText(reservation.status)}
                   </span>
                 </td>
                 <td className="px-4 py-3">
@@ -92,7 +104,7 @@ export default function ReservationManagement() {
                       reservation.status
                     )}`}
                   >
-                    {reservation.status}
+                    {getStatusText(reservation.status)}
                   </span>
                 </td>
               </tr>
