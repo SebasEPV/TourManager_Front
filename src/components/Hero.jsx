@@ -18,7 +18,7 @@ const Hero = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="text-4xl md:text-5xl lg:text-6xl font-bold shadow-md leading-tight"
+        className="text-4xl md:text-6xl lg:text-7xl font-extrabold shadow-md leading-tight tracking-wide uppercase"
       >
         ¡VIVE UNA NUEVA EXPERIENCIA!
       </motion.h1>
@@ -26,7 +26,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 1 }}
-        className="mt-4 text-base md:text-lg lg:text-xl"
+        className="mt-4 text-white md:text-lg lg:text-xl font-light max-w-2xl"
       >
         Descubre más sobre lo que te espera en la embarcación de una nueva aventura
       </motion.p>
@@ -36,7 +36,7 @@ const Hero = () => {
         whileHover={{ scale: 1.1 }} 
         whileTap={{ scale: 0.9 }} 
         onClick={scrollToTourDetails} 
-        className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-teal-500 hover:bg-teal-400 text-white font-semibold rounded-xl transition text-sm md:text-base lg:text-lg"
+        className="mt-6 px-6 py-3 bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-400 hover:to-green-400 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 text-lg"
       >
         Ver Tours
       </motion.button>
@@ -45,7 +45,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
-        className="text-2xl md:text-3xl mt-6 md:mt-8 animate-bounce cursor-pointer" 
+        className="text-3xl mt-8 animate-bounce cursor-pointer" 
         onClick={scrollToTourDetails}
       >
         ⬇️
