@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaKey, FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { registerUser } from "./../services/UserService";
+import { validateEmail, validatePassword, validateSecurityAnswer, sanitizeInput } from "../validations";
 
 export default function RegisterMFA() {
     const navigate = useNavigate();
@@ -15,39 +16,49 @@ export default function RegisterMFA() {
         const { name, value } = e.target;
         setMfaData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: sanitizeInput(value),
         }));
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault(); 
 
-        const form = event.target;
-        if (form.checkValidity()) {
-            const registerData = JSON.parse(sessionStorage.getItem("registerData"));
+        if (!validateSecurityAnswer(mfaData.secret_answer)) {
+            alert("La respuesta de seguridad no es válida.");
+            return;
+        }
 
-            // Combina los datos del registro y MFA
-            const userData = {
-                user: {
-                    ...registerData,
-                    password_confirmation: registerData.password, 
-                    secret_question: mfaData.secret_question,
-                    secret_answer: mfaData.secret_answer,
-                    role: 1,
-                    status: 1,
-                },
-            };
+        const registerData = JSON.parse(sessionStorage.getItem("registerData"));
 
-            const response = await registerUser(userData);
+        if (!validateEmail(registerData.email)) {
+            alert("El correo electrónico no es válido.");
+            return;
+        }
 
-            if (response) {
-                sessionStorage.removeItem("registerData");
-                navigate("/login");
-            } else {
-                alert("Error al registrar el usuario. Inténtalo de nuevo.");
-            }
+        if (!validatePassword(registerData.password)) {
+            alert("La contraseña no cumple con los requisitos de seguridad.");
+            return;
+        }
+
+        // Combina los datos del registro y MFA
+        const userData = {
+            user: {
+                ...registerData,
+                password_confirmation: registerData.password, 
+                secret_question: sanitizeInput(mfaData.secret_question),
+                secret_answer: sanitizeInput(mfaData.secret_answer),
+                role: 1,
+                status: 1,
+            },
+        };
+
+        const response = await registerUser(userData);
+
+        if (response) {
+            sessionStorage.removeItem("registerData");
+            navigate("/login");
         } else {
-            form.reportValidity();
+            alert("Error al registrar el usuario. Inténtalo de nuevo.");
         }
     };
 
