@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { FaLock, FaSpinner } from "react-icons/fa"
 import { MdAlternateEmail } from "react-icons/md"
 import { loginUser, sign_out } from "./../services/UserService"
+import { validateEmail, sanitizeInput } from "../validations"
+import  "./../styles/LoginForm.css"
 
 export default function Login() {
   const navigate = useNavigate()
@@ -12,6 +14,10 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [validationErrors, setValidationErrors] = useState({
+    email: "",
+    password: "",
+  })
 
   useEffect(() => {
     const forceLogout = async () => {
@@ -24,13 +30,38 @@ export default function Login() {
     forceLogout()
   }, [])
 
+  const validateForm = () => {
+    const errors = {
+      email: "",
+      password: "",
+    }
+    let isValid = true
+
+    if (!validateEmail(email)) {
+      errors.email = "Por favor ingresa un correo electrónico válido"
+      isValid = false
+    }
+
+    setValidationErrors(errors)
+    return isValid
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError("")
+    setValidationErrors({ email: "", password: "" })
+
+    if (!validateForm()) {
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      const response = await loginUser(email, password)
+      const sanitizedEmail = sanitizeInput(email)
+      const sanitizedPassword = sanitizeInput(password)
+
+      const response = await loginUser(sanitizedEmail, sanitizedPassword)
 
       if (response?.status === "PENDING_AUTHORIZATION") {
         navigate("/mfa", {
@@ -45,11 +76,9 @@ export default function Login() {
         setError("Credenciales incorrectas.")
       }
     } catch (err) {
-      // Parse the error response
       try {
         const errorData = await err.response?.json()
         if (errorData?.error) {
-          // Map API error messages to user-friendly Spanish messages
           const errorMessages = {
             "Invalid email or password": "El correo electrónico o la contraseña son incorrectos.",
             "User not found": "Usuario no encontrado.",
@@ -68,8 +97,6 @@ export default function Login() {
       } catch {
         setError("Ha ocurrido un error. Por favor intenta de nuevo.")
       }
-
-      // Log the error for debugging
       console.error("Error during login:", err)
     } finally {
       setIsLoading(false)
@@ -86,12 +113,18 @@ export default function Login() {
               type="email"
               placeholder="Correo Electrónico"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                if (validationErrors.email) {
+                  setValidationErrors((prev) => ({ ...prev, email: "" }))
+                }
+              }}
               required
               disabled={isLoading}
-              className="disabled:opacity-70"
+              className={`disabled:opacity-70 ${validationErrors.email ? "border-red-400" : ""}`}
             />
             <MdAlternateEmail className="icon" />
+            {validationErrors.email && <div className="validation-error">{validationErrors.email}</div>}
           </div>
 
           <div className="input-box">
@@ -99,21 +132,22 @@ export default function Login() {
               type="password"
               placeholder="Contraseña"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                if (validationErrors.password) {
+                  setValidationErrors((prev) => ({ ...prev, password: "" }))
+                }
+              }}
               required
               disabled={isLoading}
-              className="disabled:opacity-70"
+              className={`disabled:opacity-70 ${validationErrors.password ? "border-red-400" : ""}`}
             />
             <FaLock className="icon" />
+            {validationErrors.password && <div className="validation-error">{validationErrors.password}</div>}
           </div>
 
           {error && (
-            <div
-              role="alert"
-              className="bg-red-100 border border-red-200 text-red-700 px-4 py-3 
-                       rounded-lg text-sm font-medium text-center
-                       animate-in fade-in slide-in-from-top-1 duration-200 mb-1"
-            >
+            <div role="alert" className="error-message">
               {error}
             </div>
           )}

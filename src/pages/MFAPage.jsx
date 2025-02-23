@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FaKey, FaSpinner } from "react-icons/fa"
 import { verifySecurityAnswer } from "./../services/UserService"
+import { validateSecurityAnswer, sanitizeInput } from "../validations"
 import Cookies from "js-cookie"
+import  "./../styles/LoginForm.css"
 
 export default function RegisterMFA() {
   const navigate = useNavigate()
@@ -16,6 +18,7 @@ export default function RegisterMFA() {
   const [answer, setAnswer] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [validationError, setValidationError] = useState("")
 
   useEffect(() => {
     if (!securityQuestion || !userId) {
@@ -23,19 +26,28 @@ export default function RegisterMFA() {
     }
   }, [securityQuestion, userId, navigate])
 
+  const validateForm = () => {
+    if (!validateSecurityAnswer(answer)) {
+      setValidationError("La respuesta no puede contener caracteres especiales")
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError("")
-    setIsLoading(true)
+    setValidationError("")
 
-    if (!answer.trim()) {
-      setError("La respuesta no puede estar vacía.")
-      setIsLoading(false)
+    if (!validateForm()) {
       return
     }
 
+    setIsLoading(true)
+
     try {
-      const response = await verifySecurityAnswer(userId, answer)
+      const sanitizedAnswer = sanitizeInput(answer)
+      const response = await verifySecurityAnswer(userId, sanitizedAnswer)
 
       if (response?.status === "AUTHORIZED") {
         Cookies.set("auth_token", response.token, { expires: 1 })
@@ -52,11 +64,9 @@ export default function RegisterMFA() {
         setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
       }
     } catch (err) {
-      // Parse the error response
       try {
         const errorData = await err.response?.json()
         if (errorData?.error) {
-          // Show the specific error message from the API
           setError(
             errorData.error === "Invalid security answer"
               ? "La respuesta de seguridad es incorrecta. Por favor intenta de nuevo."
@@ -70,15 +80,12 @@ export default function RegisterMFA() {
           setError("Ha ocurrido un error. Por favor verifica tu conexión e intenta de nuevo.")
         }
       } catch {
-        // If we can't parse the error response, fall back to status-based messages
         if (err.response?.status === 401) {
           setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
         } else {
           setError("Ha ocurrido un error. Por favor intenta de nuevo.")
         }
       }
-
-      // Log the error for debugging
       console.error("Error during verification:", err)
     } finally {
       setIsLoading(false)
@@ -104,27 +111,27 @@ export default function RegisterMFA() {
             <div className="relative">
               <input
                 type="password"
-                className="w-full px-4 py-3 rounded-full border-2 border-black/20 
-                                         bg-transparent outline-none text-gray-800 
-                                         focus:border-black/40 transition-colors
-                                         placeholder:text-gray-500"
+                className={`w-full px-4 py-3 rounded-full border-2 
+                          ${validationError ? "border-red-400" : "border-black/20"}
+                          bg-transparent outline-none text-gray-800 
+                          focus:border-black/40 transition-colors
+                          placeholder:text-gray-500`}
                 placeholder="Ingresa tu respuesta"
                 value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
+                onChange={(e) => {
+                  setAnswer(e.target.value)
+                  if (validationError) setValidationError("")
+                }}
                 required
                 disabled={isLoading}
               />
               <FaKey className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600" />
             </div>
+            {validationError && <div className="error-message">{validationError}</div>}
           </div>
 
           {error && (
-            <div
-              role="alert"
-              className="bg-red-100 border border-red-200 text-red-700 px-4 py-3 
-                                     rounded-lg text-sm font-medium text-center
-                                     animate-in fade-in slide-in-from-top-1 duration-200"
-            >
+            <div role="alert" className="error-message">
               {error}
             </div>
           )}
@@ -133,11 +140,11 @@ export default function RegisterMFA() {
             type="submit"
             disabled={isLoading}
             className="w-full bg-white hover:bg-gray-50 active:bg-gray-100
-                                 text-gray-800 font-semibold py-3 px-6 rounded-full
-                                 border border-black/10 shadow-sm transition-colors
-                                 focus:outline-none focus:ring-2 focus:ring-black/20
-                                 disabled:opacity-70 disabled:cursor-not-allowed
-                                 flex items-center justify-center gap-2"
+                     text-gray-800 font-semibold py-3 px-6 rounded-full
+                     border border-black/10 shadow-sm transition-colors
+                     focus:outline-none focus:ring-2 focus:ring-black/20
+                     disabled:opacity-70 disabled:cursor-not-allowed
+                     flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
@@ -160,3 +167,4 @@ export default function RegisterMFA() {
     </div>
   )
 }
+
