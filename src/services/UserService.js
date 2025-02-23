@@ -12,6 +12,7 @@ const apiRequest = async (endpoint, method = "GET", body = null) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     };
 
     if (body) options.body = JSON.stringify(body);
@@ -47,9 +48,9 @@ export const sign_out = async () => {
 
     if (response) {
       // Elimina el token de las cookies
-      Cookies.remove('auth_token');
+      Cookies.remove("auth_token");
       // Redirige al usuario a la página de inicio de sesión
-      window.location.href = "/login";  // O usa navigate() si lo prefieres
+      window.location.href = "/login"; // O usa navigate() si lo prefieres
     }
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
