@@ -1,0 +1,19 @@
+.validation-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    text-align: left;
+    padding-left: 1rem;
+    animation: slideInFromTop 0.2s ease-out;
+  }
+  
+  .input-box input.border-red-400 {
+    border-color: #f87171;
+  }
+  
+  .input-box input.border-red-400:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+  }
+  
+  
