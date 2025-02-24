@@ -1,103 +1,117 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaThLarge, FaSubway, FaClipboardList, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaThLarge, FaSubway, FaClipboardList, FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { sign_out } from "./../services/UserService";
 
 const Header = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [userName, setUserName] = useState(""); // 👈 Guarda el nombre del usuario
-    const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false); // Estado para mostrar/ocultar menú
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        checkAuthentication();
-    }, [Cookies.get("auth_token")]); // 👈 Verifica la autenticación cada vez que cambie el token
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
-    // ✅ Verifica si el usuario está autenticado
-    const checkAuthentication = async () => {
-        try {
-            const authToken = Cookies.get("auth_token");
-            console.log("Auth Token:", authToken); // 👀 Debugging
+  const checkAuthentication = async () => {
+    try {
+      const authToken = Cookies.get("auth_token");
+      if (authToken) {
+        const response = await fetch("http://localhost:3000/session_data", {
+          method: "GET",
+          credentials: "include",
+        });
 
-            if (!authToken) {
-                setIsAuthenticated(false);
-                return;
-            }
-
-            const response = await fetch("http://localhost:3000/session_data", {
-                method: "GET",
-                credentials: "include",
-            });
-
-            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-
-            const sessionData = await response.json();
-            console.log("Datos de sesión:", sessionData); // 👀 Debugging
-
-            if (sessionData?.user) {
-                setIsAuthenticated(true);
-                setUserName(sessionData.user.name); // 👈 Guarda el nombre del usuario
-            } else {
-                setIsAuthenticated(false);
-            }
-        } catch (error) {
-            console.error("Error en la API:", error);
-            setIsAuthenticated(false);
-        } finally {
-            setIsLoading(false);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
         }
-    };
 
-    // ✅ Cierra la sesión y elimina el token
-    const handleSignOut = async () => {
-        await sign_out();
-        Cookies.remove("auth_token");
+        const sessionData = await response.json();
+        if (sessionData && sessionData.user) {
+          setIsAuthenticated(true);
+          setUserName(sessionData.user.name);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } else {
         setIsAuthenticated(false);
-        navigate("/");
-    };
+      }
+    } catch (error) {
+      console.error("Error en la API:", error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full">
-            {/* ✅ Logo */}
-            <div className="bg-white px-3 py-1 rounded-md shadow font-bold text-black text-lg">
-                Kankun
-            </div>
+  const handleSignOut = () => {
+    sign_out();
+    Cookies.remove("auth_token");
+    setIsAuthenticated(false);
+    setUserName("");
+    navigate("/");
+  };
 
-            {/* ✅ Navegación */}
-            <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
-                {[
-                    { to: "/", label: "Inicio", icon: FaThLarge },
-                    { to: "/tours", label: "Tours", icon: FaSubway },
-                    { to: "/reservations", label: "Reservas", icon: FaClipboardList },
-                ].map(({ to, label, icon: Icon }) => (
-                    <Link key={to} to={to} className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
-                        <Icon size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-                        <span className="group-hover:text-yellow-300 transition-colors duration-300">{label}</span>
-                    </Link>
-                ))}
-            </nav>
+  return (
+    <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full">
+      {/* Logo */}
+      <div className="bg-white px-3 py-1 rounded-md shadow font-bold text-black text-lg">
+        Kankun
+      </div>
 
-            {/* ✅ Autenticación: Iniciar o Cerrar Sesión */}
-            <div className="flex items-center gap-4">
-                {isLoading ? null : isAuthenticated ? (
-                    <div className="flex items-center gap-3">
-                        <span className="font-medium">👤 {userName}</span> {/* 👈 Muestra el nombre del usuario */}
-                        <button
-                            onClick={handleSignOut}
-                            className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700"
-                        >
-                            <FaSignOutAlt size={22} /> Cerrar sesión
-                        </button>
-                    </div>
-                ) : (
-                    <Link to="/login" className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700">
-                        <FaSignInAlt size={22} /> Iniciar sesión
-                    </Link>
-                )}
-            </div>
-        </header>
-    );
+      {/* Navegación */}
+      <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
+        <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+          <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">Inicio</span>
+        </Link>
+        <Link to="/tours" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+          <FaSubway size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">Tours</span>
+        </Link>
+        <Link to="/reservations" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+          <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">Reservas</span>
+        </Link>
+      </nav>
+
+      {/* Usuario */}
+      <div className="relative">
+        {isLoading ? (
+          <span className="text-sm text-gray-300">Cargando...</span>
+        ) : !isAuthenticated ? (
+          <Link to="/login" className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700">
+            <FaSignInAlt size={22} /> Iniciar sesión
+          </Link>
+        ) : (
+          <div className="relative">
+            {/* Botón con nombre y avatar */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700"
+            >
+              <FaUser size={22} />
+              <span>{userName}</span>
+            </button>
+
+            {/* Menú desplegable */}
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg">
+                <button
+                  onClick={handleSignOut}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                >
+                  <FaSignOutAlt className="inline-block mr-2" /> Cerrar sesión
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </header>
+  );
 };
 
 export default Header;
