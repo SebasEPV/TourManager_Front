@@ -42,20 +42,20 @@ export default function Voucher() {
                 <div className="flex justify-between items-start mt-4 border-b pb-2">
                     <div>
                         <h3 className="text-[#007870] font-semibold">Pagado por</h3>
-                        <p className="text-sm text-gray-700">Nombre de usuario</p>
-                        <p className="text-sm text-gray-700">Correo de usuario</p>
+                        <p className="text-sm text-gray-700 pl-4">Nombre de usuario</p>
+                        <p className="text-sm text-gray-700 pl-4">Correo de usuario</p>
                     </div>
                     <div className="text-right text-xl text-[#007870] font-bold">RECIBO</div>
                 </div>
 
                 {/* Detalles de Reserva + Recibo */}
                 <div className="flex justify-between items-start mt-4 border-b pb-2">
-                    <div className="pl-4">
+                    <div>
                         <h3 className="text-[#007870] font-semibold">Detalles de la reserva</h3>
-                        <p className="text-sm text-gray-700">Fecha inicial establecida: <span className="font-medium">DD/MM/AAAA</span></p>
-                        <p className="text-sm text-gray-700">Fecha final establecida: <span className="font-medium">DD/MM/AAAA</span></p>
-                        <p className="text-sm text-gray-700">Cantidad de personas: <span className="font-medium">Adultos | Niños</span></p>
-                        <p className="text-sm text-gray-700">Número de asignación: <span className="font-medium">000000</span></p>
+                        <p className="text-sm text-gray-700 pl-4">Fecha inicial establecida: <span className="font-medium">DD/MM/AAAA</span></p>
+                        <p className="text-sm text-gray-700 pl-4">Fecha final establecida: <span className="font-medium">DD/MM/AAAA</span></p>
+                        <p className="text-sm text-gray-700 pl-4">Cantidad de personas: <span className="font-medium">Adultos | Niños</span></p>
+                        <p className="text-sm text-gray-700 pl-4">Número de asignación: <span className="font-medium">000000</span></p>
                     </div>
                     <div className="text-right flex flex-col h-full justify-end">
                         <p className="text-sm text-gray-700 font-semibold">Recibo # <span className="font-normal">000000</span></p>
