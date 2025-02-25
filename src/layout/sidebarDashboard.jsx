@@ -2,29 +2,35 @@ import { TramFront, LayoutGrid, ClipboardCheck, Calendar, LogOut, TreePalm } fro
 
 export default function SidebarDashboard({ setTitle }) {
     return (
-        <div className="h-screen w-full sm:w-64 bg-[#45553D] text-white flex flex-col p-4" >
+        <div className="h-screen bg-[#45553D] text-white flex flex-col p-4">
             {/* Logo Section */}
-            <div className="h-20 flex items-center justify-center bg-gray-800 rounded-lg mb-4">
-                <span className="text-lg font-bold">LOGO</span>
+            <div className="flex items-center justify-center mb-4">
+                <img src="/Logo.png"
+                    className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto max-w-full object-contain"
+                />
+
             </div>
 
             {/* Navigation Options */}
             <nav className="flex flex-col space-y-4">
-                <a href="/dashboard" className="flex  gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Inicio")}>  <LayoutGrid /> Inicio </a>
-                <a href="/tours/manage" className="flex  gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Tours")}><TramFront />  Tours</a>
-                <a href="/reservations/manage" className="flex  gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Reservas")}><ClipboardCheck /> Reservas</a>
+                <a href="/dashboard" className="flex gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Inicio")}>
+                    <LayoutGrid /> Inicio
+                </a>
+                <a href="/tours/manage" className="flex gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Tours")}>
+                    <TramFront /> Tours
+                </a>
+                <a href="/reservations/manage" className="flex gap-3 px-4 py-2 rounded-lg bg-[#45553D] hover:bg-[#6e8661] transition" onClick={() => setTitle("Reservas")}>
+                    <ClipboardCheck /> Reservas
+                </a>
             </nav>
 
             <div className="p-6 mt-auto">
-                <buttonm
-                    className="flex items-center justify-end gap-4 px-4 py-3 w-full rounded-xl
-                        transition-all duration-300
-                        hover:bg-[#D9D9D9]/20
-                        active:transform active:scale-95"
+                <button
+                    className="transition-all duration-300 hover:bg-[#D9D9D9]/20 active:transform active:scale-95"
                 >
                     <LogOut className="w-6 h-6" />
                     <span className="font-medium text-lg">Cerrar Sesión</span>
-                </buttonm>
+                </button>
             </div>
         </div>
     );
