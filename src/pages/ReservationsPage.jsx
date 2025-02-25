@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, Users, DollarSign, Trash2, FileClock } from "lucide-react";
 
 const tours = [
@@ -46,6 +47,8 @@ const tours = [
 ];
 
 export default function ReservationPage() {
+    const navigate = useNavigate();
+
     return (
         <div className="p-6 bg-gray-100 min-h-screen flex">
             {/* Contenedor principal */}
@@ -69,6 +72,13 @@ export default function ReservationPage() {
                                     <Trash2 size={16} /> Eliminar
                                 </button>
                             </div>
+                            {/* Botón para navegar a /voucher */}
+                            <button
+                                onClick={() => navigate(`/voucher`)}
+                                className="mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-800"
+                            >
+                                Ver Voucher
+                            </button>
                         </div>
                     ))}
                 </div>

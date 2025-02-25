@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaClock, FaUsers } from "react-icons/fa";
-import { getTourById } from "./../services/tourService.js"; // Asegúrate de que la ruta de importación sea correcta
+import { getTourById } from "./../services/tourService.js";
+import { useNavigate } from "react-router-dom";
 
 const TourDetails = () => {
   const { id } = useParams(); // Obtén el ID del tour de la URL
@@ -13,6 +14,7 @@ const TourDetails = () => {
   const [childTickets, setChildTickets] = useState(0);
 
   const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
 
   // Cargar los detalles del tour desde el backend
   useEffect(() => {
@@ -36,18 +38,17 @@ const TourDetails = () => {
 
   return (
     <section className="relative">
-<div className="fixed top-0 left-0 w-full h-[500px] z-0 p-5 pt-25 bg-white">
-  <div
-    className="w-full h-full"
-    style={{
-      backgroundImage: `url(/${tour.img_path})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      borderRadius: "10px",
-    }}
-  ></div>
-</div>
-
+      <div className="fixed top-0 left-0 w-full h-[500px] z-0 p-5 pt-25 bg-white">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `url(/${tour.img_path})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderRadius: "10px",
+          }}
+        ></div>
+      </div>
 
       <div className="relative z-10 mt-[400px] bg-white rounded-t-lg shadow-lg">
         <div className="p-6">
@@ -148,7 +149,19 @@ const TourDetails = () => {
                     />
                   </div>
                 </div>
-                <button className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-full">
+                <button
+                  onClick={() =>
+                    navigate("/reservations", {
+                      state: {
+                        selectedDate,
+                        selectedTime,
+                        normalTickets,
+                        childTickets,
+                      },
+                    })
+                  }
+                  className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-full"
+                >
                   Reservar
                 </button>
               </>

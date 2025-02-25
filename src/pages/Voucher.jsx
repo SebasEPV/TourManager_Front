@@ -1,6 +1,13 @@
 import { MapPin, Phone, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Voucher() {
+    const navigate = useNavigate(); 
+
+    const handleBackToReservations = () => {
+        navigate("/reservations"); 
+    };
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center px-4" style={{ backgroundImage: "url('/bg2.png')" }}>
             <h1 className="text-white text-4xl md:text-5xl font-bold mb-2 mt-6 text-center drop-shadow-lg">
@@ -53,7 +60,6 @@ export default function Voucher() {
                         <p className="text-sm text-gray-700 font-semibold">Recibo # <span className="font-normal">000000</span></p>
                         <p className="text-sm text-gray-700 font-semibold mt-auto">Fecha del recibo <span className="font-normal">DD-MM-AAAA</span></p>
                     </div>
-
                 </div>
 
                 <div className="mt-4">
@@ -83,6 +89,14 @@ export default function Voucher() {
                     <p className="text-lg font-semibold flex justify-between text-gray-800"><span>Total:</span> <span>Precio general</span></p>
                 </div>
             </div>
+
+            {/* Botón para regresar a la página de reservas */}
+            <button
+                onClick={handleBackToReservations}
+                className="fixed bottom-6 left-6 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-800"
+            >
+                Regresar a Reservas
+            </button>
         </div>
     );
 }
