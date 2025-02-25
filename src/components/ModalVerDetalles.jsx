@@ -4,7 +4,7 @@ const ModalVerDetalles = ({ isOpen, onClose, datos }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#00000080] bg-opacity-50 flex items-center justify-center">
             <div className="bg-[#A5D8D6] p-6 rounded-lg shadow-lg w-[400px] relative">
                 <button className="absolute top-2 right-2 text-gray-600" onClick={onClose}>
                     <X size={24} />

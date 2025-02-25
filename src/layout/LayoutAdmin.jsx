@@ -13,7 +13,7 @@ const LayoutDashboard = ({ children }) => {
 
       <div className="flex h-full bg-gray-100 flex-col w-full">
         {/* Sticky Header */}
-        <div className="sticky top-0 z-10">
+        <div className="sticky top-0 z-0">
           <HeaderDashboard />
         </div>
 
