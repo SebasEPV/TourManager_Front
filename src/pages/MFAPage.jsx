@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FaKey, FaSpinner } from "react-icons/fa"
-import { verifySecurityAnswer } from "./../services/UserService"
+import { verifySecurityAnswer, sign_out, getSessionData } from "./../services/UserService"
 import { validateSecurityAnswer, sanitizeInput } from "../validations"
 import Cookies from "js-cookie"
 import  "./../styles/LoginForm.css"
 
-export default function RegisterMFA() {
+export default function MFAPage() {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,18 +21,35 @@ export default function RegisterMFA() {
   const [validationError, setValidationError] = useState("")
 
   useEffect(() => {
-    if (!securityQuestion || !userId) {
-      navigate("/login")
-    }
-  }, [securityQuestion, userId, navigate])
+    const checkSessionAndForceLogout = async () => {
+      try {
+        const sessionData = await getSessionData();
+
+        if (sessionData) {
+          await sign_out();
+          Cookies.remove("auth_token");
+          Cookies.remove("user_role");
+        }
+
+        if (!securityQuestion || !userId || response?.status === "PENDING_AUTHORIZATION") {
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Error during session check or logout:", err);
+        navigate("/login");
+      }
+    };
+
+    checkSessionAndForceLogout();
+  }, [securityQuestion, userId, navigate]);
 
   const validateForm = () => {
     if (!validateSecurityAnswer(answer)) {
-      setValidationError("La respuesta no puede contener caracteres especiales")
-      return false
+      setValidationError("La respuesta no puede contener caracteres especiales");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -147,4 +164,3 @@ export default function RegisterMFA() {
     </div>
   )
 }
-
