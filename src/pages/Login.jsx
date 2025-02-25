@@ -70,8 +70,6 @@ export default function Login() {
             userId: response.user_id,
           },
         })
-      } else if (response?.status === "SUCCESS") {
-        navigate("/dashboard")
       } else {
         setError("Credenciales incorrectas.")
       }

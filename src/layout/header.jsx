@@ -13,7 +13,6 @@ const Header = () => {
     checkAuthentication();
   }, []);
 
-  // Función para verificar si el usuario está autenticado
   const checkAuthentication = async () => {
     try {
       const authToken = Cookies.get("auth_token");
@@ -40,16 +39,15 @@ const Header = () => {
       console.error("Error en la API:", error);
       setIsAuthenticated(false);
     } finally {
-      setIsLoading(false); // Set loading to false after the check is complete
+      setIsLoading(false);
     }
   };
 
-  // Función para cerrar sesión
   const handleSignOut = () => {
     sign_out();
     Cookies.remove("auth_token");
     setIsAuthenticated(false);
-    navigate("/"); // Redirigir a la página de inicio
+    navigate("/"); 
   };
   
   return (
