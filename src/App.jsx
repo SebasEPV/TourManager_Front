@@ -23,6 +23,7 @@ import LayoutPayment from "./layout/LayoutPayment";
 import LayoutAdmin from "./layout/LayoutAdmin";
 import { getSessionData } from "./services/UserService";
 import { useNavigate } from "react-router-dom";
+import Footer from "./layout/Footer";
 
 const getUserRole = async () => {
   const sessionData = await getSessionData();
@@ -92,6 +93,7 @@ function App() {
             <>
               <Header />
               <Home />
+              <Footer/>
             </>
           }
         />
@@ -101,6 +103,8 @@ function App() {
             <>
               <Header />
               <Login />
+              <Footer/>
+
             </>
           }
         />
@@ -110,6 +114,8 @@ function App() {
             <>
               <Header />
               <Register />
+              <Footer/>
+
             </>
           }
         />
@@ -119,6 +125,8 @@ function App() {
             <>
               <Header />
               <RegisterMFA />
+              <Footer/>
+
             </>
           }
         />
@@ -128,6 +136,8 @@ function App() {
             <>
               <Header />
               <MFAPage />
+              <Footer/>
+
             </>
           }
         />
@@ -139,6 +149,8 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <ReservationPage />
+              <Footer/>
+
             </ProtectedRoute>
           }
         />
@@ -148,6 +160,8 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <TourDetails />
+              <Footer/>
+
             </ProtectedRoute>
           }
         />
@@ -157,6 +171,8 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <Voucher />
+              <Footer/>
+
             </ProtectedRoute>
           }
         />
@@ -166,6 +182,8 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <TourPage />
+              <Footer/>
+
             </ProtectedRoute>
           }
         />
