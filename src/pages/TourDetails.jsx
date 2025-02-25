@@ -28,24 +28,32 @@ const TourDetails = () => {
     };
 
     fetchTour();
-  }, [id]); // Volver a ejecutar si el ID cambia
+  }, [id]);
 
   if (!tour) {
-    return <div>Cargando...</div>; // Mostrar un mensaje de carga mientras se obtiene el tour
+    return <div>Cargando...</div>;
   }
 
   return (
-    <section className="max-w-4xl mx-auto py-10 px-6">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img
-          src={tour.img_path}
-          alt={tour.name}
-          className="w-full h-64 object-cover"
-        />
+    <section className="relative">
+<div className="fixed top-0 left-0 w-full h-[500px] z-0 p-5 pt-25 bg-white">
+  <div
+    className="w-full h-full"
+    style={{
+      backgroundImage: `url(/${tour.img_path})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      borderRadius: "10px",
+    }}
+  ></div>
+</div>
+
+
+      <div className="relative z-10 mt-[400px] bg-white rounded-t-lg shadow-lg">
         <div className="p-6">
           <h2 className="text-3xl font-bold">{tour.title}</h2>
           <p className="text-gray-600 text-lg font-semibold">
-            {tour.price} por persona
+            ${tour.price} por persona
           </p>
           <div className="flex items-center gap-4 mt-2">
             <span className="flex items-center bg-gray-200 px-3 py-1 rounded-full">
@@ -56,7 +64,6 @@ const TourDetails = () => {
             </span>
           </div>
 
-          {/* Pestañas de navegación */}
           <div className="flex mt-4 border-b">
             {[
               { key: "description", label: "Descripción" },
@@ -77,7 +84,6 @@ const TourDetails = () => {
             ))}
           </div>
 
-          {/* Contenido dinámico */}
           <div className="mt-4">
             {activeTab === "description" && <p>{tour.description}</p>}
             {activeTab === "includes" && (

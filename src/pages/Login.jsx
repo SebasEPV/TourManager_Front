@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { FaLock, FaSpinner } from "react-icons/fa"
 import { MdAlternateEmail } from "react-icons/md"
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { loginUser, sign_out } from "./../services/UserService"
 import { validateEmail, sanitizeInput } from "../validations"
 import  "./../styles/LoginForm.css"
@@ -103,6 +104,17 @@ export default function Login() {
     }
   }
 
+  const handleGoogleLoginSuccess = (credentialResponse) => {
+    console.log("Google Login Success:", credentialResponse);
+    // Handle the Google login success, e.g., send the credential to your backend for verification
+    // and user creation/login.
+  };
+
+  const handleGoogleLoginError = () => {
+    console.log("Google Login Failed");
+    setError("Error al iniciar sesión con Google. Por favor intenta de nuevo.");
+  };
+
   return (
     <div id="Body">
       <div className="wrapper">
@@ -155,7 +167,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="relative flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+            className="relative flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed mb-2"
           >
             {isLoading ? (
               <>
@@ -166,6 +178,17 @@ export default function Login() {
               "Iniciar"
             )}
           </button>
+
+          <GoogleOAuthProvider clientId="1093513849877-bkj75dp5muga0qftfu8inekku04t2ff4.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginError}
+              text="signup_with"
+              shape="circle"
+              size="large"
+              width="100%"
+            />
+          </GoogleOAuthProvider>
 
           <div className="register-link">
             <p>
@@ -180,4 +203,3 @@ export default function Login() {
     </div>
   )
 }
-
