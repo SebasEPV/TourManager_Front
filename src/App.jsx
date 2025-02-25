@@ -52,21 +52,17 @@ const ProtectedRoute = ({ children, role }) => {
     if (isAuth === null) {
       checkAuthentication();
     }
-  }, [isAuth]); 
+  }, [isAuth]);
 
   if (isAuth === null) {
     return <div>Loading...</div>;
   }
 
   if (!isAuth) {
-    console.log("Not authenticated! Redirecting to /login");
     return <Navigate to="/login" replace />;
   }
 
   if (role && userRole !== role) {
-    console.log(
-      `User role is ${userRole}. Expected role: ${role}. Redirecting...`
-    );
     switch (userRole) {
       case 1:
         navigate("/", { replace: true });
@@ -80,11 +76,9 @@ const ProtectedRoute = ({ children, role }) => {
       default:
         navigate("/", { replace: true });
     }
-    return null; 
+    return null;
   }
-
-  console.log("Role matches, rendering children");
-  return <>{children}</>; 
+  return <>{children}</>;
 };
 
 function App() {
@@ -140,39 +134,39 @@ function App() {
 
         {/* CLIENT ROUTES */}
         <Route
-          path="/voucher"
+          path="/reservations"
           element={
-            <>
+            <ProtectedRoute role={1}>
               <Header />
-              <ProtectedRoute element={<Voucher />} role={1} />
-            </>
+              <ReservationPage />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/tour/:id"
           element={
-            <>
+            <ProtectedRoute role={1}>
               <Header />
-              <ProtectedRoute element={<TourDetails />} role={1} />
-            </>
+              <TourDetails />
+            </ProtectedRoute>
           }
         />
         <Route
-          path="/reservations/:id"
+          path="/voucher"
           element={
-            <>
+            <ProtectedRoute role={1}>
               <Header />
-              <ProtectedRoute element={<ReservationPage />} role={1} />
-            </>
+              <Voucher />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/tours"
           element={
-            <>
+            <ProtectedRoute role={1}>
               <Header />
-              <ProtectedRoute element={<TourPage />} role={1} />
-            </>
+              <TourPage />
+            </ProtectedRoute>
           }
         />
 
@@ -187,7 +181,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-                <Route
+        <Route
           path="/tours/manage"
           element={
             <ProtectedRoute role={2}>
@@ -197,7 +191,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-                <Route
+        <Route
           path="/reservations/manage"
           element={
             <ProtectedRoute role={2}>

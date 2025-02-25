@@ -48,9 +48,7 @@ export default function RegisterMFA() {
     try {
       const sanitizedAnswer = sanitizeInput(answer);
       const response = await verifySecurityAnswer(userId, sanitizedAnswer);
-  
-      console.log("Response from verifySecurityAnswer:", response); // Log the response
-  
+    
       if (response?.status === "AUTHORIZED") {
         Cookies.set("auth_token", response.token, { expires: 1 });
         Cookies.set("user_role", response.user.role, { expires: 1 });
@@ -62,7 +60,6 @@ export default function RegisterMFA() {
         };
   
         const redirectPath = roleRedirects[response.user.role] || "/";
-        console.log("Redirecting to:", redirectPath); // Log the redirect path
         navigate(redirectPath);
       } else {
         setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.");
