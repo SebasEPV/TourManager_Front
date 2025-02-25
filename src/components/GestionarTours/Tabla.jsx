@@ -12,53 +12,60 @@ const Tabla = ({ datos, titulo, eliminarElemento }) => {
     };
 
     return (
-        <div className="bg-white p-4 rounded-lg shadow-md mt-6 w-full">
-            <table className="w-full border-separate border-spacing-2 text-left table-fixed">
-                <thead>
-                    <tr className="bg-[#C49A5A] text-white rounded-lg">
-                        <th className="p-3 text-center w-[10%] rounded-tl-lg">ID</th>
-                        <th className="p-3 text-left w-[30%]">{titulo}</th>
-                        <th className="p-3 text-center w-[15%]">Precio</th>
-                        <th className="p-3 text-center w-[15%]">Cupo Máximo</th>
-                        <th className="p-3 text-center w-[15%]">Duración</th>
-                        <th className="p-3 text-center w-[7%]">Detalles</th>
-                        <th className="p-3 text-center w-[10%] rounded-tr-lg">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {datos.map((item, index) => (
-                        <tr key={index} className="bg-[#F2D190] rounded-lg shadow-md">
-                            <td className="p-3 text-center font-semibold bg-[#C49A5A] text-white rounded-lg h-12">
-                                {item.id}
-                            </td>
-                            <td className="p-3 text-left font-medium h-12">{item.nombre}</td>
-                            <td className="p-3 text-center h-12">{item.precio}</td>
-                            <td className="p-3 text-center h-12">{item.cupo}</td>
-                            <td className="p-3 text-center h-12">{item.duracion}</td>
-                            <td className="p-3 text-center h-12">
-                                <button
-                                    className="text-[#C49A5A] hover:text-[#B0804A]"
-                                    onClick={() => abrirModal(item)}
-                                >
-                                    <Eye size={20} />
-                                </button>
-                            </td>
-                            <td className="p-3 flex justify-center gap-2 h-12">
-                                <button className="text-[#609EA2] hover:text-[#4D7F85] transition">
-                                    <Pencil size={20} />
-                                </button>
-                                <button
-                                    onClick={() => eliminarElemento(item.id)}
-                                    className="text-[#FF4B4B] hover:text-[#D93B3B] transition"
-                                >
-                                    <Trash size={20} />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="bg-white p-6 rounded-xl shadow-md mt-6 w-full border border-gray-200">
+            {/* Encabezado */}
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">{titulo}</h2>
+            </div>
 
+            {/* Tabla */}
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <table className="w-full">
+                    <thead>
+                        <tr className="text-left bg-gray-50 text-gray-600 text-sm font-medium">
+                            <th className="px-6 py-4">ID</th>
+                            <th className="px-6 py-4">{titulo}</th>
+                            <th className="px-6 py-4 text-center">Precio</th>
+                            <th className="px-6 py-4 text-center">Cupo Máximo</th>
+                            <th className="px-6 py-4 text-center">Duración</th>
+                            <th className="px-6 py-4 text-center">Detalles</th>
+                            <th className="px-6 py-4 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {datos.map((item, index) => (
+                            <tr key={index} className="hover:bg-gray-50 transition-colors">
+                                <td className="px-6 py-4 text-gray-900 font-medium">{item.id}</td>
+                                <td className="px-6 py-4 text-gray-700">{item.nombre}</td>
+                                <td className="px-6 py-4 text-center text-gray-700">{item.precio}</td>
+                                <td className="px-6 py-4 text-center text-gray-700">{item.cupo}</td>
+                                <td className="px-6 py-4 text-center text-gray-700">{item.duracion}</td>
+                                <td className="px-6 py-4 text-center">
+                                    <button
+                                        className="text-gray-500 hover:text-gray-700 transition"
+                                        onClick={() => abrirModal(item)}
+                                    >
+                                        <Eye size={20} />
+                                    </button>
+                                </td>
+                                <td className="px-6 py-4 flex justify-center gap-3">
+                                    <button className="text-blue-500 hover:text-blue-700 transition">
+                                        <Pencil size={20} />
+                                    </button>
+                                    <button
+                                        onClick={() => eliminarElemento(item.id)}
+                                        className="text-red-500 hover:text-red-700 transition"
+                                    >
+                                        <Trash size={20} />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Modal para ver detalles */}
             <ModalVerDetalles isOpen={modalOpen} onClose={() => setModalOpen(false)} datos={datoSeleccionado} />
         </div>
     );

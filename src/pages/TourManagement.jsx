@@ -3,8 +3,7 @@ import { Plus, Bus } from "lucide-react";
 import Tabla from "../components/GestionarTours/Tabla";
 import ModalCrearTour from "../components/GestionarTours/ModalCrearTour";
 import ModalCrearActividad from "../components/GestionarTours/ModalCrearActividad";
-import HeaderAdmin from "../layout/HeaderAdmin";
-import SidebarAdmin from "../layout/SidebarAdmin";
+
 
 const TourManagement = () => {
     const [menuOpen, setMenuOpen] = useState(false);
