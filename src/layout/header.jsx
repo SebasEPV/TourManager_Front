@@ -55,9 +55,7 @@ const Header = () => {
   return (
     <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full">
       {/* Logo */}
-      <div className="bg-white px-3 py-1 rounded-md shadow font-bold text-black text-lg">
-        Kankun
-      </div>
+      <img src="/Logo.jpg" alt="Kankun Logo" className="h-12 w-auto rounded-md shadow" />
 
       <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
         <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
