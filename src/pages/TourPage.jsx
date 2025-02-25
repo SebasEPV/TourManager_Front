@@ -12,15 +12,12 @@ export default function TourPage() {
 
     return (
         <div className="bg-gray-100 min-h-screen flex justify-center items-center">
-            {/* Contenedor principal */}
             <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-5xl h-[80vh] flex flex-col">
-                {/* Encabezado */}
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold flex items-center">
                         <BusFront size={24} className="mr-2" /> Tours Disponibles
                     </h2>
                     <div className="flex items-center gap-3">
-                        {/* Buscador */}
                         <div className="relative">
                             <Search className="absolute left-2 top-2 text-gray-400" size={20} />
                             <input
@@ -29,14 +26,9 @@ export default function TourPage() {
                                 className="pl-8 pr-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
                             />
                         </div>
-                        {/* Filtro */}
-                        <Filter className="cursor-pointer" size={24} />
-                        {/* Carrito */}
-                        <ShoppingCart className="cursor-pointer" size={24} />
                     </div>
                 </div>
 
-                {/* Contenedor de tarjetas con desplazamiento vertical */}
                 <div className="grid grid-cols-3 gap-6 overflow-y-auto scrollbar-hide flex-grow p-2">
                     {tours.map((tour) => (
                         <div key={tour.id} className="bg-white rounded-2xl shadow-lg p-3 w-72">
