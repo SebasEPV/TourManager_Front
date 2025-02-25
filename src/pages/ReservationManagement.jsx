@@ -9,9 +9,8 @@ export default function ReservationManagement() {
   const [filteredReservations, setFilteredReservations] = useState([])
   const [selectedTour, setSelectedTour] = useState("")
   const [selectedClient, setSelectedClient] = useState("")
-  const [searchId, setSearchId] = useState("")  // Estado para el ID de búsqueda
+  const [searchId, setSearchId] = useState("")  
 
-  // Para almacenar las opciones disponibles de tours y clientes
   const [tours, setTours] = useState([])
   const [clients, setClients] = useState([])
 
@@ -19,13 +18,12 @@ export default function ReservationManagement() {
     const fetchReservations = async () => {
       const data = await getReservations()
       setReservations(data)
-      setFilteredReservations(data) // Inicializar el filtro con todas las reservaciones
+      setFilteredReservations(data) 
 
-      // Generamos las opciones de tours y clientes de manera dinámica
-      const toursList = [...new Set(data.map(reservation => reservation.tour.name))]  // Obtener tours únicos
+      const toursList = [...new Set(data.map(reservation => reservation.tour.name))]  
       const clientsList = [
         ...new Set(data.map(reservation => `${reservation.user.name} ${reservation.user.last_name}`))
-      ]  // Obtener clientes únicos
+      ] 
 
       setTours(toursList)
       setClients(clientsList)
@@ -34,7 +32,6 @@ export default function ReservationManagement() {
   }, [])
 
   useEffect(() => {
-    // Filtrar las reservaciones cuando cambian los filtros
     setFilteredReservations(
       reservations.filter((reservation) => {
         const matchesTour = selectedTour ? reservation.tour.name === selectedTour : true
@@ -67,7 +64,7 @@ export default function ReservationManagement() {
         </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-6 gap-4">
+      <div className="mb-6 grid grid-cols-5 gap-4">
         <div>
           <label className="block text-gray-700 mb-2">Seleccionar Tour/Actividad:</label>
           <select
