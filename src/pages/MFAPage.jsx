@@ -35,62 +35,45 @@ export default function RegisterMFA() {
   }
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError("")
-    setValidationError("")
-
+    event.preventDefault();
+    setError("");
+    setValidationError("");
+  
     if (!validateForm()) {
-      return
+      return;
     }
-
-    setIsLoading(true)
-
+  
+    setIsLoading(true);
+  
     try {
-      const sanitizedAnswer = sanitizeInput(answer)
-      const response = await verifySecurityAnswer(userId, sanitizedAnswer)
-
+      const sanitizedAnswer = sanitizeInput(answer);
+      const response = await verifySecurityAnswer(userId, sanitizedAnswer);
+  
+      console.log("Response from verifySecurityAnswer:", response); // Log the response
+  
       if (response?.status === "AUTHORIZED") {
-        Cookies.set("auth_token", response.token, { expires: 1 })
-        Cookies.set("user_role", response.user.role, { expires: 1 })
-
+        Cookies.set("auth_token", response.token, { expires: 1 });
+        Cookies.set("user_role", response.user.role, { expires: 1 });
+  
         const roleRedirects = {
           1: "/",
           2: "/dashboard",
           3: "/payments/manage",
-        }
-
-        navigate(roleRedirects[response.user.role] || "/")
+        };
+  
+        const redirectPath = roleRedirects[response.user.role] || "/";
+        console.log("Redirecting to:", redirectPath); // Log the redirect path
+        navigate(redirectPath);
       } else {
-        setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
+        setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.");
       }
     } catch (err) {
-      try {
-        const errorData = await err.response?.json()
-        if (errorData?.error) {
-          setError(
-            errorData.error === "Invalid security answer"
-              ? "La respuesta de seguridad es incorrecta. Por favor intenta de nuevo."
-              : errorData.error,
-          )
-        } else if (err.response?.status === 401) {
-          setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
-        } else if (err.response?.status >= 500) {
-          setError("Error del servidor. Por favor intenta más tarde.")
-        } else {
-          setError("Ha ocurrido un error. Por favor verifica tu conexión e intenta de nuevo.")
-        }
-      } catch {
-        if (err.response?.status === 401) {
-          setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
-        } else {
-          setError("Ha ocurrido un error. Por favor intenta de nuevo.")
-        }
-      }
-      console.error("Error during verification:", err)
+      console.error("Error during verification:", err);
+      setError("Ha ocurrido un error. Por favor intenta de nuevo.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[url('./bg1.jpg')] bg-cover bg-center bg-no-repeat p-4">

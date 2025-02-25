@@ -22,11 +22,13 @@ export default function Login() {
   useEffect(() => {
     const forceLogout = async () => {
       try {
-        await sign_out()
+        await sign_out();
+        navigate("/login", { replace: true });
       } catch (err) {
-        console.error("Error during logout:", err)
+        console.error("Error during logout:", err);
       }
-    }
+    };
+    
     forceLogout()
   }, [])
 
@@ -70,8 +72,6 @@ export default function Login() {
             userId: response.user_id,
           },
         })
-      } else if (response?.status === "SUCCESS") {
-        navigate("/dashboard")
       } else {
         setError("Credenciales incorrectas.")
       }
