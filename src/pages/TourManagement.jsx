@@ -76,7 +76,7 @@ export default function TourManagement() {
                     {tours.map((tour) => (
                         <div
                             key={tour.id}
-                            className="bg-teal-800 text-white p-4 rounded-xl shadow-md w-full flex flex-col"
+                            className="bg-[#446166] text-white p-4 rounded-xl shadow-md w-full flex flex-col"
                         >
                             <div className="relative">
                                 <img
@@ -84,7 +84,7 @@ export default function TourManagement() {
                                     alt={tour.name}
                                     className="rounded-lg w-10/11 h-60 object-cover"
                                 />
-                                <div className="absolute top-2 right-2 bg-teal-900 p-2 rounded-lg text-sm flex flex-col gap-1">
+                                <div className="absolute top-2 right-2 bg-[#20555A] p-2 rounded-lg text-sm flex flex-col gap-1">
                                     <span className="flex items-center gap-1">
                                         <Clock size={16} /> {tour.time}
                                     </span>
@@ -103,7 +103,7 @@ export default function TourManagement() {
                                 <p className="text-sm max-w-[73%] text-justify">{tour.description}</p>
                                 <div className="flex flex-col items-end">
                                     <span className="text-lg font-semibold">Total: ${tour.price}</span>
-                                    <button className="bg-red-500 px-4 py-2 rounded flex items-center gap-2 hover:bg-red-700 mt-2">
+                                    <button className="bg-[#56828A] px-4 py-2 rounded flex items-center gap-2 hover:bg-red-700 mt-2">
                                         <Trash2 size={16} /> Eliminar
                                     </button>
                                 </div>
@@ -126,14 +126,26 @@ export default function TourManagement() {
             <div className="w-1/4 bg-gray-200 p-4 rounded-lg ml-6 sticky top-4 max-h-screen overflow-auto">
                 <h3 className="text-lg font-semibold">Itinerario</h3>
                 {tours.map((tour) => (
-                    <div key={tour.id} className="bg-white p-3 rounded-lg shadow-md mt-2">
+                    <div key={tour.id} className="mb-3">
                         <p className="text-gray-700 flex items-center gap-2">
-                            <Calendar size={16} /> {tour.date}
-                            <Clock size={16} /> {tour.time}
-                            <Users size={16} /> {tour.people}
-                            <DollarSign size={16} /> {tour.price}
+                            <Calendar size={18} className="text-[#007870]" /> {tour.date}
                         </p>
-                        <p className="text-gray-900 font-semibold">{tour.name}</p>
+                        <div className="bg-white p-3 rounded-lg shadow-md mt-1">
+                            <div className="flex justify-between">
+                                <p className="text-gray-700 flex items-center gap-2">
+                                    <Clock size={18} className="text-[#007870]" /> {tour.time}
+                                </p>
+                                <p className="text-gray-700 flex items-center gap-2">
+                                    <Users size={18} className="text-[#007870]" /> {tour.people}
+                                </p>
+                            </div>
+                            <div className="flex justify-between items-center mt-2">
+                                <p className="text-gray-900 font-semibold text-lg">{tour.name}</p>
+                                <p className="text-gray-700 flex items-center gap-2">
+                                    <DollarSign size={18} className="text-[#007870]" /> {tour.price}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
