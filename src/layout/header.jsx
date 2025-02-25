@@ -49,13 +49,29 @@ const Header = () => {
     setIsAuthenticated(false);
     navigate("/"); 
   };
-  
+
   return (
     <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full">
       {/* Logo */}
-      <div className="bg-white px-3 py-1 rounded-md shadow font-bold text-black text-lg">
-        Kankun
+      <div
+        className="px-3 py-1 rounded-md font-bold text-white text-lg"
+        style={{
+          backgroundImage: "url('/LogoKANKUN.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          width: "4rem",
+          height: "4rem",
+          display: "flex",        
+          alignItems: "center",   
+          justifyContent: "center"
+        }}
+      >
+        <p className="flex pl-36">
+          KANKUN
+        </p>
       </div>
+
+
 
       <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
         <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
