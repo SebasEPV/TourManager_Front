@@ -31,7 +31,7 @@ export default function MFAPage() {
           Cookies.remove("user_role");
         }
 
-        if (!securityQuestion || !userId || response?.status === "PENDING_AUTHORIZATION") {
+        if (!securityQuestion || !userId ) {
           navigate("/login");
         }
       } catch (err) {
