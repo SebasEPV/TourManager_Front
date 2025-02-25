@@ -12,14 +12,22 @@ const apiRequest = async (endpoint, method = "GET", body = null) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials : "include",
     };
 
     if (body) options.body = JSON.stringify(body);
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
-    if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
 
+    if (response.status === 204) {
+      return null;
+    }
+
+    // Parse JSON for other responses
     return await response.json();
   } catch (error) {
     console.error("Error en la API:", error);
@@ -28,29 +36,37 @@ const apiRequest = async (endpoint, method = "GET", body = null) => {
 };
 
 // Crear un usuario
-export const registerUser = (userData) => apiRequest("/users/", "POST", userData);
+export const registerUser = (userData) =>
+  apiRequest("/users/", "POST", userData);
 
 // Iniciar sesión
-export const loginUser = (email, password) => apiRequest("/users/sign_in", "POST", { email, password });
+export const loginUser = (email, password) =>
+  apiRequest("/users/sign_in", "POST", { email, password });
 
-// Verificar la respuesta de seguridad 
-export const verifySecurityAnswer = (userId, securityAnswer) => apiRequest("/verify_security_answer", "POST", { user_id: userId, security_answer: securityAnswer });
+// Verificar la respuesta de seguridad
+export const verifySecurityAnswer = (userId, securityAnswer) =>
+  apiRequest("/verify_security_answer", "POST", {
+    user_id: userId,
+    security_answer: securityAnswer,
+  });
 
 // Obtener datos de la sesión actual
 export const getSessionData = () => apiRequest("/session_data", "GET");
 
 // Cerrar sesión
-// Eliminar el token de las cookies y redirigir al usuario
 export const sign_out = async () => {
   try {
-    const response = await apiRequest("/users/sign_out", "DELETE");
+    const response = await fetch("http://localhost:3000/users/sign_out", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
 
-    if (response) {
-      // Elimina el token de las cookies
-      Cookies.remove('auth_token');
-      // Redirige al usuario a la página de inicio de sesión
-      window.location.href = "/login";  // O usa navigate() si lo prefieres
-    }
+    if (!response.ok) throw new Error("Error en la solicitud de cierre de sesión");
+
+    console.log("Signed out successfully.");
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
   }
