@@ -1,5 +1,6 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from "recharts";
+import SidebarDashboard from "../layout/sidebarDashboard";
 
 const data = [
   { name: "Jan", ingresos: 112 },
@@ -24,7 +25,13 @@ const pieData = [
 
 const Dashboard = () => {
   return (
-    <div className="p-6 bg-gray-200 min-h-screen">
+    <div className="flex h-screen bg-gray-100">
+    {/* Sidebar */}
+    <div className="w-64 bg-white shadow-md">
+      <SidebarDashboard/>
+    </div>
+  
+    <div className="flex-1 p-6 bg-gray-200 min-h-screen">
       <div className="grid grid-cols-2 gap-6">
         {/* Tours más reservados */}
         <div className="bg-[#8BA97B] p-4 rounded-lg shadow-md">
@@ -39,7 +46,7 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-
+  
         {/* Historial de ingresos */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-bold mb-4">Historial de ingresos</h2>
@@ -53,7 +60,7 @@ const Dashboard = () => {
           </BarChart>
         </div>
       </div>
-
+  
       {/* Tasa de reservas por mes */}
       <div className="mt-6 bg-[#8BA97B] p-4 rounded-lg shadow-md flex flex-col items-center">
         <h2 className="text-lg font-bold mb-4">Tasa de reservas por mes</h2>
@@ -74,6 +81,10 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
+  </div>
+  
+
+
   );
 };
 
