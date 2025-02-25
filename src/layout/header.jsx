@@ -51,8 +51,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full">
-      {/* Logo */}
+    <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full sticky top-0 z-50">
       <div
         className="px-3 py-1 rounded-md font-bold text-white text-lg"
         style={{
@@ -70,8 +69,6 @@ const Header = () => {
           KANKUN
         </p>
       </div>
-
-
 
       <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
         <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
