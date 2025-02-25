@@ -1,23 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Bus } from "lucide-react";
-import Tabla from "../components/GestionarTours/Tabla";
-import ModalCrearTour from "../components/GestionarTours/ModalCrearTour";
-import ModalCrearActividad from "../components/GestionarTours/ModalCrearActividad";
-
+import Tabla from "../components/Tabla";
+import ModalCrearTour from "../components/ModalCrearTour";
+import ModalCrearActividad from "../components/ModalCrearActividad";
+import { getTours, createTour, deleteTour } from "./../services/tourService";
+import { getActivities, createActivity, deleteActivity } from "./../services/activityService"; 
 
 const TourManagement = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [modalTourOpen, setModalTourOpen] = useState(false);
-    const [modalActividadOpen, setModalActividadOpen] = useState(false);
-    const [tours, setTours] = useState([
-        { id: "0001", nombre: "Experiencia Isla Mujeres", precio: "$10,000", cupo: "6 Personas", duracion: "3 días" },
-        { id: "0002", nombre: "Tour Cancún", precio: "$10,000", cupo: "6 Personas", duracion: "3 días" },
-        { id: "0003", nombre: "Chichenitza", precio: "$10,000", cupo: "6 Personas", duracion: "3 días" },
-    ]);
+    const [modalTourOpen, setModalTourOpen] = useState(false);  // Modal de Tour
+    const [modalActividadOpen, setModalActividadOpen] = useState(false); // Modal de Actividad
+    const [tours, setTours] = useState([]);
+    const [actividades, setActividades] = useState([]);
 
-    const [actividades, setActividades] = useState([
-        { id: "0001", nombre: "Buceo", precio: "$10,000", cupo: "6 Personas", duracion: "3 días" },
-    ]);
+    // Obtener los tours y actividades al cargar el componente
+    useEffect(() => {
+        const fetchData = async () => {
+            const fetchedTours = await getTours();
+            const fetchedActivities = await getActivities();
+            setTours(fetchedTours || []);
+            setActividades(fetchedActivities || []);
+        };
+
+        fetchData();
+    }, []);
+
+    const eliminarTour = async (id) => {
+        const response = await deleteTour(id);
+        if (response) {
+            setTours(tours.filter((tour) => tour.id !== id));
+        }
+    };
+
+    const eliminarActividad = async (id) => {
+        const response = await deleteActivity(id);
+        if (response) {
+            setActividades(actividades.filter((activity) => activity.id !== id));
+        }
+    };
+
+    const handleCreateTour = () => {
+        setModalTourOpen(true); // Abre solo el modal de tours
+        setMenuOpen(false); // Cierra el menú
+    };
+
+    const handleCreateActivity = () => {
+        setModalActividadOpen(true); // Abre solo el modal de actividades
+        setMenuOpen(false); // Cierra el menú
+    };
 
     return (
         <div className="p-6 bg-gray-100 rounded-lg shadow-lg relative">
@@ -35,10 +65,14 @@ const TourManagement = () => {
                     </button>
                     {menuOpen && (
                         <div className="absolute right-0 mt-2 w-44 bg-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-2">
-                            <button onClick={() => { setModalTourOpen(true); setMenuOpen(false); }} className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
+                            <button 
+                                onClick={handleCreateTour} 
+                                className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
                                 Crear Tour
                             </button>
-                            <button onClick={() => { setModalActividadOpen(true); setMenuOpen(false); }} className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
+                            <button 
+                                onClick={handleCreateActivity} 
+                                className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
                                 Crear Actividad
                             </button>
                         </div>
@@ -47,11 +81,23 @@ const TourManagement = () => {
             </div>
 
             <div className="w-full space-y-6">
-                <Tabla datos={tours} titulo="Nombre de los Tours" eliminarElemento={(id) => setTours(tours.filter(tour => tour.id !== id))} />
-                <Tabla datos={actividades} titulo="Nombre de las Actividades" eliminarElemento={(id) => setActividades(actividades.filter(act => act.id !== id))} />
+                {/* Tabla para tours */}
+                <Tabla 
+                    datos={tours} 
+                    titulo="Nombre de los Tours" 
+                    eliminarElemento={eliminarTour} 
+                />
+                {/* Tabla para actividades */}
+                <Tabla 
+                    datos={actividades} 
+                    titulo="Nombre de las Actividades" 
+                    eliminarElemento={eliminarActividad} 
+                />
             </div>
 
+            {/* Modal para Tour */}
             {modalTourOpen && <ModalCrearTour onClose={() => setModalTourOpen(false)} />}
+            {/* Modal para Actividad */}
             {modalActividadOpen && <ModalCrearActividad onClose={() => setModalActividadOpen(false)} />}
         </div>
     );
