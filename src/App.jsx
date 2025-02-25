@@ -20,18 +20,17 @@ import MFAPage from "./pages/MFAPage";
 import TourDetails from "./pages/TourDetails";
 import RegisterMFA from "./pages/RegisterMFA";
 import LayoutPayment from "./layout/LayoutPayment";
+import LayoutAdmin from "./layout/LayoutAdmin";
 import { getSessionData } from "./services/UserService";
 import { useNavigate } from "react-router-dom";
 
 const getUserRole = async () => {
   const sessionData = await getSessionData();
-  console.log("Session Data:", sessionData);
   return sessionData?.user?.role ?? null;
 };
 
 const isAuthenticated = async () => {
   const sessionData = await getSessionData();
-  console.log("Authenticated:", sessionData?.user !== undefined);
   return sessionData?.user !== undefined;
 };
 
@@ -44,11 +43,16 @@ const ProtectedRoute = ({ children, role }) => {
     const checkAuthentication = async () => {
       const auth = await isAuthenticated();
       const role = await getUserRole();
+      console.log("Authentication status:", auth);
+      console.log("User role:", role);
       setIsAuth(auth);
       setUserRole(role);
     };
-    checkAuthentication();
-  }, []);
+
+    if (isAuth === null) {
+      checkAuthentication();
+    }
+  }, [isAuth]); 
 
   if (isAuth === null) {
     return <div>Loading...</div>;
@@ -59,7 +63,10 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && userRole != role) {
+  if (role && userRole !== role) {
+    console.log(
+      `User role is ${userRole}. Expected role: ${role}. Redirecting...`
+    );
     switch (userRole) {
       case 1:
         navigate("/", { replace: true });
@@ -73,12 +80,12 @@ const ProtectedRoute = ({ children, role }) => {
       default:
         navigate("/", { replace: true });
     }
-    return null;
+    return null; 
   }
 
-  return children;
+  console.log("Role matches, rendering children");
+  return <>{children}</>; 
 };
-
 
 function App() {
   return (
@@ -137,7 +144,7 @@ function App() {
           element={
             <>
               <Header />
-              <ProtectedRoute element={<Voucher />} role="1" />
+              <ProtectedRoute element={<Voucher />} role={1} />
             </>
           }
         />
@@ -146,7 +153,7 @@ function App() {
           element={
             <>
               <Header />
-              <ProtectedRoute element={<TourDetails />} role="1" />
+              <ProtectedRoute element={<TourDetails />} role={1} />
             </>
           }
         />
@@ -155,58 +162,49 @@ function App() {
           element={
             <>
               <Header />
-              <ProtectedRoute element={<ReservationPage />} role="1" />
+              <ProtectedRoute element={<ReservationPage />} role={1} />
             </>
           }
         />
-          <Route
-            path="/tours"
-            element={
-              <>
-                <Header />
-                <ProtectedRoute element={<TourPage />} role="1" />
-              </>
-            }
-          />
+        <Route
+          path="/tours"
+          element={
+            <>
+              <Header />
+              <ProtectedRoute element={<TourPage />} role={1} />
+            </>
+          }
+        />
 
         {/* ADMIN ROUTES */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute
-              element={
-                <LayoutPayment>
-                  <Dashboard />
-                </LayoutPayment>
-              }
-              role="2"
-            />
+            <ProtectedRoute role={2}>
+              <LayoutAdmin>
+                <Dashboard />
+              </LayoutAdmin>
+            </ProtectedRoute>
           }
         />
-        <Route
+                <Route
           path="/tours/manage"
           element={
-            <ProtectedRoute
-              element={
-                <LayoutPayment>
-                  <TourManagement />
-                </LayoutPayment>
-              }
-              role="2"
-            />
+            <ProtectedRoute role={2}>
+              <LayoutAdmin>
+                <TourManagement />
+              </LayoutAdmin>
+            </ProtectedRoute>
           }
         />
-        <Route
+                <Route
           path="/reservations/manage"
           element={
-            <ProtectedRoute
-              element={
-                <LayoutPayment>
-                  <ReservationManagement />
-                </LayoutPayment>
-              }
-              role="2"
-            />
+            <ProtectedRoute role={2}>
+              <LayoutAdmin>
+                <ReservationManagement />
+              </LayoutAdmin>
+            </ProtectedRoute>
           }
         />
 
