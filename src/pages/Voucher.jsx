@@ -13,19 +13,26 @@ export default function Voucher() {
 
             {/* Recibo */}
             <div className="bg-white p-6 mb-12 md:p-8 rounded-lg shadow-xl w-full max-w-2xl">
-                {/* Encabezado */}
                 <div className="flex justify-between items-center border-b pb-4">
                     <div className="text-left">
-                        <div className="w-16 h-16 bg-gray-300 flex items-center justify-center rounded-lg">
-                            <span className="text-lg font-bold">LOGO</span>
+                        <div
+                            className="w-32 h-32 flex items-center justify-center rounded-lg"
+                            style={{
+                                backgroundImage: "url('/LogoKANKUN.png')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center"
+                            }}
+                        >
+                            <span className="text-lg font-bold"></span>
                         </div>
                     </div>
+
                     <div className="text-center">
                         <h2 className="text-3xl font-bold text-[#007870]">ISLA MUJERES</h2>
                         <div className="flex items-center justify-center gap-4 text-gray-500 text-sm mt-2">
-                            <p className="flex items-center gap-1"><MapPin size={14} /> Dirección</p>
-                            <p className="flex items-center gap-1"><Phone size={14} /> Número de atención</p>
-                            <p className="flex items-center gap-1"><Mail size={14} /> Correo de atención</p>
+                            <p className="flex items-center gap-1"><MapPin size={14} className="text-white fill-[#007870]" /> Dirección</p>
+                            <p className="flex items-center gap-1"><Phone size={14} className="text-white fill-[#007870]" /> Número de atención</p>
+                            <p className="flex items-center gap-1"><Mail size={14} className="text-white fill-[#007870]" /> Correo de atención</p>
                         </div>
                     </div>
                     <div className="text-right text-xl font-semibold text-white">Recibo</div>
