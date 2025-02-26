@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaThLarge, FaSubway, FaClipboardList, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaThLarge,
+  FaSubway,
+  FaClipboardList,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import Cookies from "js-cookie";
 import { sign_out } from "./../services/UserService";
 
@@ -47,47 +53,72 @@ const Header = () => {
     sign_out();
     Cookies.remove("auth_token");
     setIsAuthenticated(false);
-    navigate("/"); 
+    navigate("/");
   };
 
   return (
     <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full sticky top-0 z-50">
       <div
-        className="px-3 py-1 rounded-md font-bold text-white text-lg"
+        className="px-3 py-1 rounded-md font-bold text-white text-lg mr-33"
         style={{
           backgroundImage: "url('/LogoKANKUN.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "4rem",
           height: "4rem",
-          display: "flex",        
-          alignItems: "center",   
-          justifyContent: "center"
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <p className="flex pl-36">
-          KANKUN
-        </p>
+        <p className="flex pl-36">KANKUN</p>
       </div>
 
-      <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
-        <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
-          <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Inicio</span>
+      <nav className="flex flex-1 justify-center items-center text-lg font-medium gap-16">
+        <Link
+          to="/"
+          className="flex gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+        >
+          <FaThLarge
+            size={24}
+            className="group-hover:text-yellow-400 transition-colors duration-300"
+          />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">
+            Inicio
+          </span>
         </Link>
-        <Link to="/tours" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
-          <FaSubway size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Tours</span>
+        <Link
+          to="/tours"
+          className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+        >
+          <FaSubway
+            size={24}
+            className="group-hover:text-yellow-400 transition-colors duration-300"
+          />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">
+            Tours
+          </span>
         </Link>
-        <Link to="/reservations" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
-          <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Reservas</span>
+        <Link
+          to="/reservations"
+          className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+        >
+          <FaClipboardList
+            size={24}
+            className="group-hover:text-yellow-400 transition-colors duration-300"
+          />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">
+            Reservas
+          </span>
         </Link>
       </nav>
 
       <div className="flex items-center gap-4">
         {!isAuthenticated ? (
-          <Link to="/login" className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700">
+          <Link
+            to="/login"
+            className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700"
+          >
             <FaSignInAlt size={22} /> Iniciar sesión
           </Link>
         ) : (
