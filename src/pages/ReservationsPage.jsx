@@ -13,24 +13,7 @@ export default function ReservationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isChecking, setIsChecking] = useState(true); // Para controlar el estado de verificación
-
-  useEffect(() => {
-    const verifySession = async () => {
-      await checkAuthentication(); // Verificar autenticación
-      setIsChecking(false); // Cuando la verificación esté completa, se puede proceder
-
-      // Solo redirigir después de haber comprobado si el usuario está autenticado
-      if (!isAuthenticated) {
-        setError("Necesitas iniciar sesión para hacer una reserva.");
-        setTimeout(() => {
-          navigate("/login");
-        }, 5000);
-      }
-    };
-
-    verifySession();
-  }, [isAuthenticated, checkAuthentication, navigate]);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -57,10 +40,6 @@ export default function ReservationPage() {
   const filteredReservations = reservations.filter((reservation) =>
     reservation.tour.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  if (authLoading || isChecking) {
-    return <div>Loading...</div>; // Mostrar mientras se verifica la autenticación
-  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-center">
