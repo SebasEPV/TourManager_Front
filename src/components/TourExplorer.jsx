@@ -85,44 +85,11 @@ const TourCategories = () => {
   );
 };
 
-const SearchSection = () => {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-
-  const handleSearchClick = () => {
-    if (search.trim()) {
-      navigate(`/tours?search=${search}`);
-    }
-  };
-
-  return (
-    <section className="py-10 bg-teal-800 text-white text-center">
-      <h2 className="text-2xl font-bold">Descubre tu próximo viaje</h2>
-      <p className="mt-2">Reserva tours y observa las actividades que ofrecen</p>
-      <div className="mt-6 flex justify-center gap-4">
-        <input
-          type="text"
-          placeholder="Búsqueda de tours"
-          className="px-4 py-2 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button
-          className="bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-400 transition"
-          onClick={handleSearchClick}
-        >
-          Buscar
-        </button>
-      </div>
-    </section>
-  );
-};
 
 const TourExplorer = () => {
   return (
     <div className="w-full">
       <TourCategories />
-      <SearchSection />
     </div>
   );
 };
