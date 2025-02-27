@@ -134,6 +134,26 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/tours"
+          element={
+            <>
+              <Header />
+              <TourPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/tour/:id"
+          element={
+            <>
+              <Header />
+              <TourDetails />
+              <Footer />
+            </>
+          }
+        />
 
         {/* CLIENT ROUTES */}
         <Route
@@ -142,26 +162,6 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <ReservationPage />
-              <Footer />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tours"
-          element={
-            <ProtectedRoute role={1}>
-              <Header />
-              <TourPage />
-              <Footer />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tour/:id"
-          element={
-            <ProtectedRoute role={1}>
-              <Header />
-              <TourDetails />
               <Footer />
             </ProtectedRoute>
           }
