@@ -62,6 +62,7 @@ export default function ReservationPage() {
             reservations={filteredReservations}
             loading={loading}
             error={error}
+            setReservations={setReservations}
           />
         </div>
       </div>
