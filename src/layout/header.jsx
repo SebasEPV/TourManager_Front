@@ -3,10 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaThLarge, FaSubway, FaClipboardList, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { sign_out } from "./../services/UserService";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Add a loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userName, setUserName] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,13 +32,14 @@ const Header = () => {
         const sessionData = await response.json();
         if (sessionData.user) {
           setIsAuthenticated(true);
+          setUserName(sessionData.user.name + " " + sessionData.user.last_name);
         } else {
           setIsAuthenticated(false);
-          setUser(null); 
+          setUserName(null); 
         }
       } else {
         setIsAuthenticated(false);
-        setUser(null); 
+        setUserName(null); 
       }
     } catch (error) {
       console.error("Error en la API:", error);
@@ -48,6 +54,12 @@ const Header = () => {
     Cookies.remove("auth_token");
     setIsAuthenticated(false);
     navigate("/"); 
+  };
+
+  const handleSearchClick = () => {
+    if (search.trim()) {
+      navigate(`/tours?search=${search}`);
+    }
   };
 
   return (
@@ -65,12 +77,11 @@ const Header = () => {
           justifyContent: "center"
         }}
       >
-        <p className="flex pl-36">
-          KANKUN
-        </p>
+        <p className="flex pl-36">KANKUN</p>
       </div>
 
-      <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-10">
+      {/* Menú de navegación */}
+      <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-5 ml-10">
         <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
           <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Inicio</span>
@@ -85,7 +96,25 @@ const Header = () => {
         </Link>
       </nav>
 
-      <div className="flex items-center gap-4">
+      {/* Buscador con ícono de lupa dentro del input */}
+      <div className="flex items-center gap-2 ml-4 relative">
+        <input
+          type="text"
+          placeholder="Buscar tours"
+          className="px-4 py-2 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 pl-10" // Añadir padding izquierdo para espacio para la lupa
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <FontAwesomeIcon
+          icon={faSearch}
+          size="lg"
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-700"
+          onClick={handleSearchClick}
+        />
+      </div>
+
+      {/* Nombre y botón de usuario */}
+      <div className="flex items-center gap-4 ml-1.5">
         {!isAuthenticated ? (
           <Link
             to="/login"
@@ -99,7 +128,7 @@ const Header = () => {
               onClick={() => setMenuOpen(!menuOpen)}
               className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700"
             >
-              <FaUserCircle size={24} /> {userName}
+              <FontAwesomeIcon icon={faUserCircle} size="lg" /> {userName}
             </button>
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white text-teal-700 rounded-md shadow-lg py-2 z-50">
