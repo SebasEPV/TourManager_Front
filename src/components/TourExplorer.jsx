@@ -86,6 +86,36 @@ const TourCategories = () => {
 };
 
 
+
+const SearchSection = () => {
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const handleSearchClick = () => {
+    if (search.trim()) {
+      navigate(`/tours?search=${search}`);
+    }
+  };
+
+  return (
+    <section className="py-10 bg-teal-800 text-white text-center">
+      <h2 className="text-2xl font-bold">Descubre tu próximo viaje</h2>
+      <p className="mt-2">Reserva tours y observa las actividades que ofrecen</p>
+      <div className="mt-6 flex justify-center gap-4">
+        <input
+          
+        />
+        <button
+
+        >
+          
+        </button>
+      </div>
+    </section>
+  );
+};
+
+
 const TourExplorer = () => {
   return (
     <div className="w-full">
