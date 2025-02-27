@@ -14,7 +14,6 @@ import TourManagement from "./pages/TourManagement";
 import ReservationManagement from "./pages/ReservationManagement";
 import ReservationPage from "./pages/ReservationsPage";
 import TourPage from "./pages/TourPage";
-import Voucher from "./pages/Voucher";
 import Dashboard from "./pages/Dashboard";
 import MFAPage from "./pages/MFAPage";
 import TourDetails from "./pages/TourDetails";
@@ -44,8 +43,6 @@ const ProtectedRoute = ({ children, role }) => {
     const checkAuthentication = async () => {
       const auth = await isAuthenticated();
       const role = await getUserRole();
-      console.log("Authentication status:", auth);
-      console.log("User role:", role);
       setIsAuth(auth);
       setUserRole(role);
     };
@@ -93,7 +90,7 @@ function App() {
             <>
               <Header />
               <Home />
-              <Footer/>
+              <Footer />
             </>
           }
         />
@@ -103,8 +100,7 @@ function App() {
             <>
               <Header />
               <Login />
-              <Footer/>
-
+              <Footer />
             </>
           }
         />
@@ -114,8 +110,7 @@ function App() {
             <>
               <Header />
               <Register />
-              <Footer/>
-
+              <Footer />
             </>
           }
         />
@@ -125,8 +120,7 @@ function App() {
             <>
               <Header />
               <RegisterMFA />
-              <Footer/>
-
+              <Footer />
             </>
           }
         />
@@ -136,43 +130,19 @@ function App() {
             <>
               <Header />
               <MFAPage />
-              <Footer/>
-
+              <Footer />
             </>
           }
         />
 
         {/* CLIENT ROUTES */}
         <Route
-          path="/reservations"
+          path="/reservations/:id"
           element={
             <ProtectedRoute role={1}>
               <Header />
               <ReservationPage />
-              <Footer/>
-
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tour/:id"
-          element={
-            <ProtectedRoute role={1}>
-              <Header />
-              <TourDetails />
-              <Footer/>
-
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/voucher"
-          element={
-            <ProtectedRoute role={1}>
-              <Header />
-              <Voucher />
-              <Footer/>
-
+              <Footer />
             </ProtectedRoute>
           }
         />
@@ -182,8 +152,17 @@ function App() {
             <ProtectedRoute role={1}>
               <Header />
               <TourPage />
-              <Footer/>
-
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tour/:id"
+          element={
+            <ProtectedRoute role={1}>
+              <Header />
+              <TourDetails />
+              <Footer />
             </ProtectedRoute>
           }
         />

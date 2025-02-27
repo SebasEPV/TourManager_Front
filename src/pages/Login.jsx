@@ -106,8 +106,7 @@ export default function Login() {
 
   const handleGoogleLoginSuccess = (credentialResponse) => {
     console.log("Google Login Success:", credentialResponse);
-    // Handle the Google login success, e.g., send the credential to your backend for verification
-    // and user creation/login.
+    //Google sign in logic
   };
 
   const handleGoogleLoginError = () => {

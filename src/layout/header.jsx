@@ -14,6 +14,7 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,15 +36,19 @@ const Header = () => {
         if (sessionData.user) {
           setIsAuthenticated(true);
           setUserName(sessionData.user.name);
+          setUser(sessionData.user); 
         } else {
           setIsAuthenticated(false);
+          setUser(null); 
         }
       } else {
         setIsAuthenticated(false);
+        setUser(null); 
       }
     } catch (error) {
       console.error("Error en la API:", error);
       setIsAuthenticated(false);
+      setUser(null); 
     }
   };
 
@@ -51,12 +56,13 @@ const Header = () => {
     sign_out();
     Cookies.remove("auth_token");
     setIsAuthenticated(false);
+    setUser(null); // Reset user object
     navigate("/");
   };
 
   return (
     <header className="bg-teal-700 text-white py-3 px-8 flex items-center justify-between shadow-lg border-b border-teal-600 w-full sticky top-0 z-50">
-        <div
+      <div
         className="px-3 py-1 rounded-md font-bold text-white text-lg mr-33"
         style={{
           backgroundImage: "url('/LogoKANKUN.png')",
@@ -73,23 +79,58 @@ const Header = () => {
       </div>
 
       <nav className="flex flex-1 justify-center items-center text-lg font-medium gap-16">
-        <Link to="/" className="flex gap-1 group transition-transform duration-200 hover:scale-110 mx-15">
-          <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Inicio</span>
+        <Link
+          to="/"
+          className="flex gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+        >
+          <FaThLarge
+            size={24}
+            className="group-hover:text-yellow-400 transition-colors duration-300"
+          />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">
+            Inicio
+          </span>
         </Link>
-        <Link to="/tours" className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15">
-          <FaSubway size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Tours</span>
+        <Link
+          to="/tours"
+          className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+        >
+          <FaSubway
+            size={24}
+            className="group-hover:text-yellow-400 transition-colors duration-300"
+          />
+          <span className="group-hover:text-yellow-300 transition-colors duration-300">
+            Tours
+          </span>
         </Link>
-        <Link to="/reservations" className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15">
-          <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
-          <span className="group-hover:text-yellow-300 transition-colors duration-300">Reservas</span>
-        </Link>
+        {/* Conditional Link for Reservations */}
+        {user && user.id ? (
+          <Link
+            to={`/reservations/${user.id}`}
+            className="flex items-center gap-1 group transition-transform duration-200 hover:scale-110 mx-15"
+          >
+            <FaClipboardList
+              size={24}
+              className="group-hover:text-yellow-400 transition-colors duration-300"
+            />
+            <span className="group-hover:text-yellow-300 transition-colors duration-300">
+              Reservas
+            </span>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-1 mx-15 opacity-50 cursor-not-allowed">
+            <FaClipboardList size={24} />
+            <span>Reservas</span>
+          </div>
+        )}
       </nav>
 
       <div className="relative">
         {!isAuthenticated ? (
-          <Link to="/login" className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700">
+          <Link
+            to="/login"
+            className="flex items-center gap-2 text-lg px-3 py-1 rounded-md transition hover:bg-white hover:text-teal-700"
+          >
             <FaSignInAlt size={22} /> Iniciar sesión
           </Link>
         ) : (
