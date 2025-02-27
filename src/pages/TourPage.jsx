@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom"; // Importar useSearchParams
+import { useSearchParams } from "react-router-dom";
 import { BusFront, Filter } from "lucide-react";
 import { getTours } from "../services/tourService";
 import { getTourTypes } from "../services/tourTypesService";
@@ -10,43 +10,52 @@ export default function TourPage() {
   const [tourTypes, setTourTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchParams] = useSearchParams(); 
+  const selectedTourType = searchParams.get("type") ? parseInt(searchParams.get("type"), 10) : null;
+  const selectedSearch = searchParams.get("search") || "";
+
+  const [searchQuery, setSearchQuery] = useState(selectedSearch);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedTours = await getTours();
         const fetchedTourTypes = await getTourTypes();
-  
-        if (fetchedTours) {
-          setTours(fetchedTours);
-        } else {
-          setError("No se pudieron cargar los tours.");
-        }
-        if (fetchedTourTypes) {
-          setTourTypes(fetchedTourTypes);
-        }
+
+        if (fetchedTours) setTours(fetchedTours);
+        else setError("No se pudieron cargar los tours.");
+
+        if (fetchedTourTypes) setTourTypes(fetchedTourTypes);
       } catch (err) {
         setError("Error al cargar los tours.");
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [searchParams]); // <- Escuchar cambios en searchParams
-  
+  }, []);
 
-const selectedTourType = searchParams.get("type") ? parseInt(searchParams.get("type"), 10) : null;
+  useEffect(() => {
+    setSearchQuery(selectedSearch); // Sincroniza la búsqueda con la URL
+  }, [selectedSearch]);
 
-const filteredTours = tours.filter((tour) => {
-  const matchesSearch = tour.name.toLowerCase().includes(searchQuery.toLowerCase());
-  const matchesType = selectedTourType ? tour.tour_type_id === selectedTourType : true;
-  return matchesSearch && matchesType;
-});
+  const handleSearchChange = (e) => {
+    const newSearch = e.target.value;
+    setSearchQuery(newSearch);
+    setSearchParams({ search: newSearch, type: selectedTourType || "" }); // Actualiza la URL sin recargar
+  };
 
+  const handleFilterChange = (e) => {
+    setSearchParams({ search: searchQuery, type: e.target.value }); // Mantiene la búsqueda y actualiza el filtro
+  };
+
+  const filteredTours = tours.filter((tour) => {
+    const matchesSearch = tour.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = selectedTourType ? tour.tour_type_id === selectedTourType : true;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-center">
@@ -61,17 +70,15 @@ const filteredTours = tours.filter((tour) => {
               type="text"
               placeholder="Buscar tours..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
 
             <div className="flex items-center gap-2">
               <Filter size={20} className="text-gray-500" />
               <select
-                value={selectedTourType}
-                onChange={(e) => {
-                  window.location.href = `/tours?type=${e.target.value}`; // Redireccionar con el filtro
-                }}
+                value={selectedTourType || ""}
+                onChange={handleFilterChange}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="">Filtrar por tipo</option>

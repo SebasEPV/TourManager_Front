@@ -15,8 +15,8 @@ const TourCategories = () => {
 
   const getIcon = (logoName) => {
     switch (logoName) {
-      case "TbBeach":
-        return <GiPalmTree  size={30} />;
+      case "GiPalmTree":
+        return <GiPalmTree size={30} />;
       case "GiAncientRuins":
         return <GiAncientRuins size={30} />;
       case "GiUndergroundCave":
@@ -53,10 +53,9 @@ const TourCategories = () => {
     fetchTourTypes();
   }, []);
 
-  const handleCategoryClick = (categoryName) => {
-    navigate(`/tours?type=${categoryName}`);
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/tours?type=${categoryId}`);
   };
-  
 
   if (loading) {
     return <p className="text-center text-white">Cargando tipos de tour...</p>;
@@ -70,16 +69,16 @@ const TourCategories = () => {
     <section className="py-8 bg-teal-900 text-white text-center">
       <h2 className="text-2xl font-bold mb-6">Explora tipos de tours</h2>
       <div className="flex justify-center gap-6 flex-wrap">
-        {tourTypes.map((category, index) => (
+        {tourTypes.map((category) => (
           <motion.div
-            key={index}
+            key={category.id}
             whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center justify-center bg-teal-700 rounded-lg shadow-lg hover:bg-teal-600 transition w-24 h-24"
+            className="flex flex-col items-center justify-center bg-teal-700 rounded-lg shadow-lg hover:bg-teal-600 transition w-24 h-24 cursor-pointer"
             onClick={() => handleCategoryClick(category.id)}
-            >
+          >
             {getIcon(category.logo)}
             <span className="mt-2 text-center text-sm font-semibold">{category.name}</span>
-            </motion.div>
+          </motion.div>
         ))}
       </div>
     </section>
@@ -88,6 +87,13 @@ const TourCategories = () => {
 
 const SearchSection = () => {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const handleSearchClick = () => {
+    if (search.trim()) {
+      navigate(`/tours?search=${search}`);
+    }
+  };
 
   return (
     <section className="py-10 bg-teal-800 text-white text-center">
@@ -98,10 +104,12 @@ const SearchSection = () => {
           type="text"
           placeholder="Búsqueda de tours"
           className="px-4 py-2 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <button
           className="bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-400 transition"
-          // onClick={}
+          onClick={handleSearchClick}
         >
           Buscar
         </button>
