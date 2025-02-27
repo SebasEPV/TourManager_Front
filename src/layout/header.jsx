@@ -82,7 +82,6 @@ const Header = () => {
         <p className="flex pl-36">KANKUN</p>
       </div>
 
-      {/* Menú de navegación */}
       <nav className="flex justify-around flex-1 px-4 text-lg font-medium gap-5 ml-10">
         <Link to="/" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
           <FaThLarge size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
@@ -98,12 +97,11 @@ const Header = () => {
         </Link>
       </nav>
 
-      {/* Buscador con ícono de lupa dentro del input */}
       <div className="flex items-center gap-2 ml-4 relative">
         <input
           type="text"
           placeholder="Buscar tours"
-          className="px-4 py-2 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 pl-10" // Añadir padding izquierdo para espacio para la lupa
+          className="px-4 py-2 rounded-[30px] text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 pl-10"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -115,8 +113,7 @@ const Header = () => {
         />
       </div>
 
-      {/* Nombre y botón de usuario */}
-      <div className="flex items-center gap-4 ml-1.5">
+      <div className="flex items-center gap-4 ml-5">
         {!isAuthenticated ? (
           <Link
             to="/login"
