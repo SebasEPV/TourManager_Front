@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaClock, FaUsers } from "react-icons/fa";
-import { getTourById } from "./../services/tourService.js"; // Asegúrate de que la ruta de importación sea correcta
+import { getTourById } from "./../services/tourService.js";
+import { useNavigate } from "react-router-dom";
 
 const TourDetails = () => {
   const { id } = useParams(); // Obtén el ID del tour de la URL
@@ -13,6 +14,7 @@ const TourDetails = () => {
   const [childTickets, setChildTickets] = useState(0);
 
   const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
 
   // Cargar los detalles del tour desde el backend
   useEffect(() => {
@@ -28,24 +30,31 @@ const TourDetails = () => {
     };
 
     fetchTour();
-  }, [id]); // Volver a ejecutar si el ID cambia
+  }, [id]);
 
   if (!tour) {
-    return <div>Cargando...</div>; // Mostrar un mensaje de carga mientras se obtiene el tour
+    return <div>Cargando...</div>;
   }
 
   return (
-    <section className="max-w-4xl mx-auto py-10 px-6">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img
-          src={tour.img_path}
-          alt={tour.name}
-          className="w-full h-64 object-cover"
-        />
+    <section className="relative">
+      <div className="fixed top-0 left-0 w-full h-[500px] z-0 p-5 pt-25 bg-white">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `url(/${tour.img_path})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderRadius: "10px",
+          }}
+        ></div>
+      </div>
+
+      <div className="relative z-10 mt-[400px] bg-white rounded-t-lg shadow-lg">
         <div className="p-6">
           <h2 className="text-3xl font-bold">{tour.title}</h2>
           <p className="text-gray-600 text-lg font-semibold">
-            {tour.price} por persona
+            ${tour.price} por persona
           </p>
           <div className="flex items-center gap-4 mt-2">
             <span className="flex items-center bg-gray-200 px-3 py-1 rounded-full">
@@ -56,12 +65,11 @@ const TourDetails = () => {
             </span>
           </div>
 
-          {/* Pestañas de navegación */}
           <div className="flex mt-4 border-b">
             {[
               { key: "description", label: "Descripción" },
               { key: "includes", label: "¿Qué incluye?" },
-              { key: "itinerary", label: "Itinerario" },
+              { key: "itinerary", label: "Reservar" },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -77,7 +85,6 @@ const TourDetails = () => {
             ))}
           </div>
 
-          {/* Contenido dinámico */}
           <div className="mt-4">
             {activeTab === "description" && <p>{tour.description}</p>}
             {activeTab === "includes" && (
@@ -142,7 +149,19 @@ const TourDetails = () => {
                     />
                   </div>
                 </div>
-                <button className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-full">
+                <button
+                  onClick={() =>
+                    navigate("/reservations", {
+                      state: {
+                        selectedDate,
+                        selectedTime,
+                        normalTickets,
+                        childTickets,
+                      },
+                    })
+                  }
+                  className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-full"
+                >
                   Reservar
                 </button>
               </>

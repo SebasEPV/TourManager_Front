@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FaKey, FaSpinner } from "react-icons/fa"
-import { verifySecurityAnswer } from "./../services/UserService"
+import { verifySecurityAnswer, sign_out, getSessionData } from "./../services/UserService"
 import { validateSecurityAnswer, sanitizeInput } from "../validations"
 import Cookies from "js-cookie"
 import  "./../styles/LoginForm.css"
 
-export default function RegisterMFA() {
+export default function MFAPage() {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,76 +21,73 @@ export default function RegisterMFA() {
   const [validationError, setValidationError] = useState("")
 
   useEffect(() => {
-    if (!securityQuestion || !userId) {
-      navigate("/login")
-    }
-  }, [securityQuestion, userId, navigate])
+    const checkSessionAndForceLogout = async () => {
+      try {
+        const sessionData = await getSessionData();
+
+        if (sessionData) {
+          await sign_out();
+          Cookies.remove("auth_token");
+          Cookies.remove("user_role");
+        }
+
+        if (!securityQuestion || !userId ) {
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Error during session check or logout:", err);
+        navigate("/login");
+      }
+    };
+
+    checkSessionAndForceLogout();
+  }, [securityQuestion, userId, navigate]);
 
   const validateForm = () => {
     if (!validateSecurityAnswer(answer)) {
-      setValidationError("La respuesta no puede contener caracteres especiales")
-      return false
+      setValidationError("La respuesta no puede contener caracteres especiales");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError("")
-    setValidationError("")
-
+    event.preventDefault();
+    setError("");
+    setValidationError("");
+  
     if (!validateForm()) {
-      return
+      return;
     }
-
-    setIsLoading(true)
-
+  
+    setIsLoading(true);
+  
     try {
-      const sanitizedAnswer = sanitizeInput(answer)
-      const response = await verifySecurityAnswer(userId, sanitizedAnswer)
-
+      const sanitizedAnswer = sanitizeInput(answer);
+      const response = await verifySecurityAnswer(userId, sanitizedAnswer);
+    
       if (response?.status === "AUTHORIZED") {
-        Cookies.set("auth_token", response.token, { expires: 1 })
-        Cookies.set("user_role", response.user.role, { expires: 1 })
-
+        Cookies.set("auth_token", response.token, { expires: 1 });
+        Cookies.set("user_role", response.user.role, { expires: 1 });
+  
         const roleRedirects = {
           1: "/",
           2: "/dashboard",
           3: "/payments/manage",
-        }
-
-        navigate(roleRedirects[response.user.role] || "/")
+        };
+  
+        const redirectPath = roleRedirects[response.user.role] || "/";
+        navigate(redirectPath);
       } else {
-        setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
+        setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.");
       }
     } catch (err) {
-      try {
-        const errorData = await err.response?.json()
-        if (errorData?.error) {
-          setError(
-            errorData.error === "Invalid security answer"
-              ? "La respuesta de seguridad es incorrecta. Por favor intenta de nuevo."
-              : errorData.error,
-          )
-        } else if (err.response?.status === 401) {
-          setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
-        } else if (err.response?.status >= 500) {
-          setError("Error del servidor. Por favor intenta más tarde.")
-        } else {
-          setError("Ha ocurrido un error. Por favor verifica tu conexión e intenta de nuevo.")
-        }
-      } catch {
-        if (err.response?.status === 401) {
-          setError("La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.")
-        } else {
-          setError("Ha ocurrido un error. Por favor intenta de nuevo.")
-        }
-      }
-      console.error("Error during verification:", err)
+      console.error("Error during verification:", err);
+      setError("Ha ocurrido un error. Por favor intenta de nuevo.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[url('./bg1.jpg')] bg-cover bg-center bg-no-repeat p-4">
@@ -167,4 +164,3 @@ export default function RegisterMFA() {
     </div>
   )
 }
-

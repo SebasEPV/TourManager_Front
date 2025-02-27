@@ -32,7 +32,7 @@ const Hero = () => {
       </motion.p>
 
       {/* Botón y flecha para desplazamiento suave */}
-      <motion.button 
+      {/* <motion.button 
         whileHover={{ scale: 1.1 }} 
         whileTap={{ scale: 0.9 }} 
         onClick={scrollToTourDetails} 
@@ -49,7 +49,7 @@ const Hero = () => {
         onClick={scrollToTourDetails}
       >
         ⬇️
-      </motion.span>
+      </motion.span> */}
     </section>
   );
 };
