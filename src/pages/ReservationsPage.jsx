@@ -11,8 +11,6 @@ export default function ReservationPage() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  console.log("User ID from URL:", id);
-
   useEffect(() => {
     const fetchReservations = async () => {
       try {
