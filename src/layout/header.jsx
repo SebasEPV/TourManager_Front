@@ -12,6 +12,7 @@ const Header = () => {
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [userName, setUserName] = useState(null);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +34,7 @@ const Header = () => {
         if (sessionData.user) {
           setIsAuthenticated(true);
           setUserName(sessionData.user.name + " " + sessionData.user.last_name);
+          setUserId(sessionData.user.id);
         } else {
           setIsAuthenticated(false);
           setUserName(null); 
@@ -90,8 +92,8 @@ const Header = () => {
           <FaSubway size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Tours</span>
         </Link>
-        <Link to="/reservations" className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
-          <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
+        <Link to={`/reservations/${userId}`} className="flex flex-col items-center gap-1 group transition-transform duration-200 hover:scale-110">
+        <FaClipboardList size={24} className="group-hover:text-yellow-400 transition-colors duration-300" />
           <span className="group-hover:text-yellow-300 transition-colors duration-300">Reservas</span>
         </Link>
       </nav>
