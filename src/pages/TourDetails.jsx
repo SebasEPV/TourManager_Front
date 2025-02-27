@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaClock, FaUsers } from "react-icons/fa";
 import { getTourById } from "./../services/tourService.js";
-import { useNavigate } from "react-router-dom";
+import useAuth from "./../hooks/useAuth.js";
+import { createReservation } from "../services/reservationService.js"; // Import API call
 
 const TourDetails = () => {
-  const { id } = useParams(); // Obtén el ID del tour de la URL
-  const [tour, setTour] = useState(null); // Estado para almacenar los datos del tour
+  const { id } = useParams();
+  const [tour, setTour] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [normalTickets, setNormalTickets] = useState(0);
   const [childTickets, setChildTickets] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const today = new Date().toISOString().split("T")[0];
+
+  const { isAuthenticated, user, userName, checkAuthentication } = useAuth();
   const navigate = useNavigate();
 
-  // Cargar los detalles del tour desde el backend
   useEffect(() => {
     const fetchTour = async () => {
       const fetchedTour = await getTourById(id);
@@ -35,6 +38,46 @@ const TourDetails = () => {
   if (!tour) {
     return <div>Cargando...</div>;
   }
+
+  const handleReservation = async () => {
+    const totalPeople =
+      parseInt(normalTickets, 10) + parseInt(childTickets, 10);
+  
+    if (selectedDate < today) {
+      setErrorMessage("Por favor, elige una fecha futura.");
+      return;
+    }
+  
+    if (totalPeople > tour.max_capacity) {
+      setErrorMessage(
+        `La capacidad máxima del tour es ${tour.max_capacity} personas. No puedes reservar más.`
+      );
+      return;
+    }
+  
+    if (user && user.id) {
+      const reservationData = {
+        date: selectedDate,
+        num_of_people: parseInt(normalTickets, 10),
+        num_of_kids: parseInt(childTickets, 10),
+        status: 1,
+        tour_id: tour.id,
+        activity_id: null,
+        user_id: user.id,
+        total_price: normalTickets * tour.price,
+      };
+  
+      try {
+        await createReservation(reservationData);
+        navigate(`/reservation/${user.id}`);
+      } catch (error) {
+        setErrorMessage("Hubo un error al realizar la reserva. Intenta nuevamente.");
+      }
+    } else {
+      setErrorMessage("Usuario no autenticado o sin ID.");
+    }
+  };
+  
 
   return (
     <section className="relative">
@@ -69,15 +112,13 @@ const TourDetails = () => {
             {[
               { key: "description", label: "Descripción" },
               { key: "includes", label: "¿Qué incluye?" },
-              { key: "itinerary", label: "Reservar" },
+              { key: "itinerary", label: "Itinerario" },
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2 text-lg font-semibold border-b-2 transition-colors ${
-                  activeTab === tab.key
-                    ? "border-teal-500 text-teal-600"
-                    : "border-transparent text-gray-500 hover:text-teal-500"
+                  activeTab === tab.key ? "border-teal-500 text-teal-600" : "border-transparent text-gray-500 hover:text-teal-500"
                 }`}
               >
                 {tab.label}
@@ -100,11 +141,9 @@ const TourDetails = () => {
 
             {activeTab === "itinerary" && (
               <>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="grid grid-cols-4 gap-4 mt-4">
                   <div>
-                    <label className="block text-gray-700">
-                      Fecha de salida
-                    </label>
+                    <label className="block text-gray-700">Fecha de salida</label>
                     <input
                       type="date"
                       min={today}
@@ -114,9 +153,7 @@ const TourDetails = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700">
-                      Hora de salida
-                    </label>
+                    <label className="block text-gray-700">Hora de salida</label>
                     <input
                       type="time"
                       value={selectedTime}
@@ -125,9 +162,7 @@ const TourDetails = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700">
-                      Boletos Normales
-                    </label>
+                    <label className="block text-gray-700">Boletos Normales</label>
                     <input
                       type="number"
                       min="1"
@@ -149,18 +184,14 @@ const TourDetails = () => {
                     />
                   </div>
                 </div>
+                {errorMessage && (
+                  <div className="bg-red-100 text-red-700 border border-red-400 p-4 rounded-md mt-4">
+                    <p>{errorMessage}</p>
+                  </div>
+                )}
                 <button
-                  onClick={() =>
-                    navigate("/reservations", {
-                      state: {
-                        selectedDate,
-                        selectedTime,
-                        normalTickets,
-                        childTickets,
-                      },
-                    })
-                  }
-                  className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-full"
+                  onClick={handleReservation}
+                  className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition w-[30%] mx-[35%]"
                 >
                   Reservar
                 </button>

@@ -1,36 +1,83 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUmbrellaBeach, FaHiking, FaTheaterMasks, FaMountain, FaGlobe } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { GiAncientRuins, GiUndergroundCave, GiPalmTree , GiSnorkel } from "react-icons/gi";
+import { TbScubaDiving, TbParachute } from "react-icons/tb"; 
+import { FaUtensils } from "react-icons/fa";
+import { PiBeachBallFill } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
+import { getTourTypes } from "../services/tourTypesService"; 
 
 const TourCategories = () => {
-  const navigate = useNavigate(); // Inicializa el hook de navegación
-  const categories = [
-    { label: "Playero", icon: <FaUmbrellaBeach size={30} /> },
-    { label: "Aventurero", icon: <FaHiking size={30} /> },
-    { label: "Cultural", icon: <FaTheaterMasks size={30} /> },
-    { label: "Montañoso", icon: <FaMountain size={30} /> },
-    { label: "Explorar más", icon: <FaGlobe size={30} /> },
-  ];
+  const [tourTypes, setTourTypes] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const navigate = useNavigate();   
 
-  // Función para redirigir al login
-  const handleRedirectToLogin = () => {
-    navigate("/login"); // Redirige a la página de login
+  const getIcon = (logoName) => {
+    switch (logoName) {
+      case "GiPalmTree":
+        return <GiPalmTree size={30} />;
+      case "GiAncientRuins":
+        return <GiAncientRuins size={30} />;
+      case "GiUndergroundCave":
+        return <GiUndergroundCave size={30} />;
+      case "GiSnorkel":
+        return <GiSnorkel size={30} />;
+      case "TbScubaDiving":
+        return <TbScubaDiving size={30} />;
+      case "TbParachute":
+        return <TbParachute size={30} />;
+      case "FaUtensils":
+        return <FaUtensils size={30} />;
+      default:
+        return <PiBeachBallFill size={30} />;
+    }
   };
+
+  useEffect(() => {
+    const fetchTourTypes = async () => {
+      try {
+        const data = await getTourTypes();
+        if (data) {
+          setTourTypes(data);
+        } else {
+          setError("No se pudieron cargar los tipos de tour."); 
+        }
+      } catch (err) {
+        setError("Error al cargar los tipos de tour.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTourTypes();
+  }, []);
+
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/tours?type=${categoryId}`);
+  };
+
+  if (loading) {
+    return <p className="text-center text-white">Cargando tipos de tour...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-white">{error}</p>;
+  }
 
   return (
     <section className="py-8 bg-teal-900 text-white text-center">
       <h2 className="text-2xl font-bold mb-6">Explora tipos de tours</h2>
       <div className="flex justify-center gap-6 flex-wrap">
-        {categories.map((category, index) => (
+        {tourTypes.map((category) => (
           <motion.div
-            key={index}
+            key={category.id}
             whileHover={{ scale: 1.1 }}
-            className="flex flex-col items-center p-4 bg-teal-700 rounded-lg shadow-lg hover:bg-teal-600 transition"
-            onClick={handleRedirectToLogin} // Agrega el evento de clic
+            className="flex flex-col items-center justify-center bg-teal-700 rounded-lg shadow-lg hover:bg-teal-600 transition w-24 h-24 cursor-pointer"
+            onClick={() => handleCategoryClick(category.id)}
           >
-            {category.icon}
-            <span className="mt-2 text-sm font-semibold">{category.label}</span>
+            {getIcon(category.logo)}
+            <span className="mt-2 text-center text-sm font-semibold">{category.name}</span>
           </motion.div>
         ))}
       </div>
@@ -39,11 +86,13 @@ const TourCategories = () => {
 };
 
 const SearchSection = () => {
-  const navigate = useNavigate(); // Inicializa el hook de navegación
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
 
-  // Función para redirigir al login
-  const handleRedirectToLogin = () => {
-    navigate("/login"); // Redirige a la página de login
+  const handleSearchClick = () => {
+    if (search.trim()) {
+      navigate(`/tours?search=${search}`);
+    }
   };
 
   return (
@@ -55,10 +104,12 @@ const SearchSection = () => {
           type="text"
           placeholder="Búsqueda de tours"
           className="px-4 py-2 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <button
           className="bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-400 transition"
-          onClick={handleRedirectToLogin} // Agrega el evento de clic
+          onClick={handleSearchClick}
         >
           Buscar
         </button>

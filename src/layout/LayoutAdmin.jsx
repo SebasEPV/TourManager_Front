@@ -17,7 +17,7 @@ const LayoutDashboard = ({ children }) => {
           <HeaderDashboard />
         </div>
 
-        <div className="flex-1 p-6 bg-gray-200 min-h-screen">
+        <div className="flex-1 p-4 bg-gray-200 min-h-screen">
           {children}
         </div>
       </div>

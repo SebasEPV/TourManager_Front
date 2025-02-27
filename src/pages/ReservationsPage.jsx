@@ -1,110 +1,95 @@
-import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, Users, DollarSign, Trash2, FileClock } from "lucide-react";
-
-const tours = [
-    {
-        id: 1,
-        name: "Isla Mujeres",
-        image: "/CruceroIslaMujeres.png",
-        description: "Disfruta de un día increíble en Isla Mujeres.",
-        price: 1500
-    },
-    {
-        id: 2,
-        name: "Cozumel",
-        image: "/CruceroCozumel.png",
-        description: "Explora los arrecifes de Cozumel y su vida marina.",
-        price: 2350
-    },
-    {
-        id: 3,
-        name: "Holbox",
-        image: "/CruceroHolbox.png",
-        description: "Relájate en la paradisíaca isla de Holbox.",
-        price: 1800
-    },
-    {
-        id: 4,
-        name: "Bacalar",
-        image: "/CruceroBacalar.png",
-        description: "Descubre las playas y la vida nocturna de Bacalar.",
-        price: 2000
-    },
-    {
-        id: 5,
-        name: "Playa del Carmen",
-        image: "/CruceroPlayaDelCarmen.png",
-        description: "Vive la experiencia de Playa del Carmen y sus cenotes.",
-        price: 2200
-    },
-    {
-        id: 6,
-        name: "Tulum",
-        image: "/CruceroTulum.png",
-        description: "Explora las ruinas mayas y las playas de Tulum.",
-        price: 1900
-    }
-];
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FileClock } from "lucide-react";
+import ReservationCard from "../components/ReservationCard";
+import { getReservations } from "../services/reservationService";
+import useAuth from "../hooks/useAuth"; // Asegúrate de tener el hook en la carpeta correcta
 
 export default function ReservationPage() {
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated, loading: authLoading, checkAuthentication } = useAuth();
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isChecking, setIsChecking] = useState(true); // Para controlar el estado de verificación
 
-    return (
-        <div className="p-6 bg-gray-100 min-h-screen flex">
-            {/* Contenedor principal */}
-            <div className="flex-1">
-                <h2 className="text-2xl font-bold flex items-center mb-4">
-                    <FileClock size={24} className="mr-2" /> Reservas
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {tours.map((tour) => (
-                        <div key={tour.id} className="bg-teal-700 text-white p-6 rounded-xl shadow-md w-full">
-                            <img
-                                src={tour.image}
-                                alt={tour.name}
-                                className="rounded-lg w-full h-52 object-cover"
-                            />
-                            <h3 className="text-2xl font-semibold mt-3">{tour.name}</h3>
-                            <p className="text-sm mt-2">{tour.description}</p>
-                            <div className="mt-4 flex justify-between items-center">
-                                <span className="text-lg font-semibold">Total: ${tour.price}</span>
-                                <button className="bg-red-500 px-4 py-2 rounded flex items-center gap-2 hover:bg-red-700">
-                                    <Trash2 size={16} /> Eliminar
-                                </button>
-                            </div>
-                            {/* Botón para navegar a /voucher */}
-                            <button
-                                onClick={() => navigate(`/voucher`)}
-                                className="mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-800"
-                            >
-                                Ver Voucher
-                            </button>
-                        </div>
-                    ))}
-                </div>
-                <div className="flex justify-between mt-6">
-                    <button className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-800">
-                        Ver más tours
-                    </button>
-                    <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-800">
-                        Eliminar todo
-                    </button>
-                </div>
-            </div>
+  useEffect(() => {
+    const verifySession = async () => {
+      await checkAuthentication(); // Verificar autenticación
+      setIsChecking(false); // Cuando la verificación esté completa, se puede proceder
 
-            {/* Barra lateral de Itinerario (Sticky) */}
-            <div className="w-1/4 bg-gray-300 p-4 rounded-lg ml-6 sticky top-4 max-h-screen overflow-auto">
-                <h3 className="text-lg font-semibold">Itinerario</h3>
-                {tours.map((tour) => (
-                    <div key={tour.id} className="bg-white p-3 rounded-lg shadow-md mt-2">
-                        <p className="text-gray-700 flex items-center gap-2">
-                            <Calendar size={16} /> 15/03/25 <Clock size={16} /> 08:00
-                            <Users size={16} /> 7 <DollarSign size={16} /> {tour.price}
-                        </p>
-                        <p className="text-gray-900 font-semibold">{tour.name}</p>
-                    </div>
-                ))}
-            </div>
+      // Solo redirigir después de haber comprobado si el usuario está autenticado
+      if (!isAuthenticated) {
+        setError("Necesitas iniciar sesión para hacer una reserva.");
+        setTimeout(() => {
+          navigate("/login");
+        }, 5000);
+      }
+    };
+
+    verifySession();
+  }, [isAuthenticated, checkAuthentication, navigate]);
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const data = await getReservations();
+        if (data) {
+          const userReservations = data.filter(
+            (reservation) => reservation.user_id === parseInt(id)
+          );
+          setReservations(userReservations);
+        } else {
+          setError("No se pudieron cargar las reservaciones.");
+        }
+      } catch (err) {
+        setError("Error al cargar las reservaciones.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, [id]);
+
+  const filteredReservations = reservations.filter((reservation) =>
+    reservation.tour.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (authLoading || isChecking) {
+    return <div>Loading...</div>; // Mostrar mientras se verifica la autenticación
+  }
+
+  return (
+    <div className="bg-gray-100 min-h-screen flex justify-center items-center">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-7xl flex flex-col my-5">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold flex items-center">
+            <FileClock size={24} className="mr-2" /> Reservas
+          </h2>
+
+          <input
+            type="text"
+            placeholder="Buscar reservas..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
         </div>
-    );
+
+        {error && <div className="text-red-500">{error}</div>}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-auto scrollbar-hide flex-grow p-2">
+          <ReservationCard
+            reservations={filteredReservations}
+            loading={loading}
+            error={error}
+            setReservations={setReservations}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }

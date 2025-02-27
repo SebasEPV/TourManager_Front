@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Bus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Tabla from "../components/Tabla";
 import ModalCrearTour from "../components/ModalCrearTour";
 import ModalCrearActividad from "../components/ModalCrearActividad";
@@ -8,12 +8,11 @@ import { getActivities, createActivity, deleteActivity } from "./../services/act
 
 const TourManagement = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [modalTourOpen, setModalTourOpen] = useState(false);  // Modal de Tour
-    const [modalActividadOpen, setModalActividadOpen] = useState(false); // Modal de Actividad
+    const [modalTourOpen, setModalTourOpen] = useState(false);
+    const [modalActividadOpen, setModalActividadOpen] = useState(false);
     const [tours, setTours] = useState([]);
     const [actividades, setActividades] = useState([]);
 
-    // Obtener los tours y actividades al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
             const fetchedTours = await getTours();
@@ -40,21 +39,19 @@ const TourManagement = () => {
     };
 
     const handleCreateTour = () => {
-        setModalTourOpen(true); // Abre solo el modal de tours
-        setMenuOpen(false); // Cierra el menú
+        setModalTourOpen(true);
+        setMenuOpen(false);
     };
 
     const handleCreateActivity = () => {
-        setModalActividadOpen(true); // Abre solo el modal de actividades
-        setMenuOpen(false); // Cierra el menú
+        setModalActividadOpen(true);
+        setMenuOpen(false);
     };
 
     return (
-        <div className="p-6 bg-gray-100 rounded-lg shadow-lg relative">
+        <div className="p-5 bg-gray-100 rounded-lg shadow-lg relative">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                    <Bus className="w-6 h-6 text-gray-700" /> Gestionar Tours
-                </h2>
+                <h2 className="text-2xl font-bold">Gestionar Tours</h2>
 
                 <div className="relative">
                     <button
@@ -64,7 +61,7 @@ const TourManagement = () => {
                         <Plus size={24} />
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 mt-2 w-44 bg-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-2">
+                        <div className="absolute right-0 mt-2 w-44 bg-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-2 z-10">
                             <button 
                                 onClick={handleCreateTour} 
                                 className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
@@ -81,23 +78,20 @@ const TourManagement = () => {
             </div>
 
             <div className="w-full space-y-6">
-                {/* Tabla para tours */}
                 <Tabla 
                     datos={tours} 
                     titulo="Nombre de los Tours" 
                     eliminarElemento={eliminarTour} 
                 />
-                {/* Tabla para actividades */}
                 <Tabla 
                     datos={actividades} 
                     titulo="Nombre de las Actividades" 
-                    eliminarElemento={eliminarActividad} 
+                    eliminarElemento={eliminarActividad}
+                    esActividad={true}
                 />
             </div>
 
-            {/* Modal para Tour */}
             {modalTourOpen && <ModalCrearTour onClose={() => setModalTourOpen(false)} />}
-            {/* Modal para Actividad */}
             {modalActividadOpen && <ModalCrearActividad onClose={() => setModalActividadOpen(false)} />}
         </div>
     );
