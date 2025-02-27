@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react"; // Eliminado Bus
+import { Plus } from "lucide-react";
 import Tabla from "../components/Tabla";
 import ModalCrearTour from "../components/ModalCrearTour";
 import ModalCrearActividad from "../components/ModalCrearActividad";
@@ -49,9 +49,9 @@ const TourManagement = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-100 rounded-lg shadow-lg relative mt-16 max-h-screen overflow-auto">
+        <div className="p-5 bg-gray-100 rounded-lg shadow-lg relative">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Gestionar Tours</h2> {/* Eliminado el ícono */}
+                <h2 className="text-2xl font-bold">Gestionar Tours</h2>
 
                 <div className="relative">
                     <button
@@ -61,7 +61,7 @@ const TourManagement = () => {
                         <Plus size={24} />
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 mt-2 w-44 bg-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-2">
+                        <div className="absolute right-0 mt-2 w-44 bg-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-2 z-10">
                             <button 
                                 onClick={handleCreateTour} 
                                 className="bg-[#6C8361] text-white py-2 px-4 rounded-lg hover:bg-[#5C7150] transition">
@@ -86,7 +86,8 @@ const TourManagement = () => {
                 <Tabla 
                     datos={actividades} 
                     titulo="Nombre de las Actividades" 
-                    eliminarElemento={eliminarActividad} 
+                    eliminarElemento={eliminarActividad}
+                    esActividad={true}
                 />
             </div>
 
